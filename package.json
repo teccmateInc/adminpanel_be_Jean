@@ -1,0 +1,36 @@
+{
+  "name": "adminpanel_be",
+  "version": "1.0.0",
+  "description": "Admin panel backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "eslint": "eslint \"**/*.{js,ts}\" --quiet --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://teccmate@bitbucket.org/enovavision/adminpanel_be.git"
+  },
+  "keywords": [
+    "Admin",
+    "panel",
+    "adminpanel_be"
+  ],
+  "author": "Faizan Qureshi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/enovavision/adminpanel_be/issues"
+  },
+  "homepage": "https://bitbucket.org/enovavision/adminpanel_be#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "global": "^4.4.0",
+    "mongoose": "^6.0.14",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
