@@ -11,5 +11,8 @@ user.route('/:userId')
     .patch(userController.updateUser)
     .put(userController.updateUser)
     .delete(userController.deleteUser);
+user.route("/login").post(userController.UserLogin);
+user.route("/register").post(userController.registerUser);
+user.route("/logout").get(userController.logout)
 
 module.exports = user;
