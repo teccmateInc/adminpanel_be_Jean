@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator=requuire('validator');
+const validator=require('validator');
 const OrderSchema=mongoose.Schema({
   email: {
     type: String,
@@ -25,6 +25,11 @@ const OrderSchema=mongoose.Schema({
   sent_profile: {
 
   },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
 });
-module.exports=mongoose.model('orders', OrderSchema);
+module.exports=mongoose.model('Order', OrderSchema);

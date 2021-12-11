@@ -1,44 +1,54 @@
-const mongoose=require('mongoose');
-const validator=require('validator');
-const bcrypt=require('bcryptjs');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 const candidateSchema = mongoose.Schema({
-  name: {
+  userId: {
     type: String,
-    required: [true, 'Name is required!'],
-    maxLength: [20, 'Phone number cannot exceed 20 Characters'],
-    minLength: [3, 'Phone number should be greater then 3 characters'],
+    required: true,
   },
-  email: {
+  firstname: {
     type: String,
-    required: [true, 'Email is required!'],
-    validate: [validator.isEmail, 'Please enter valid email'],
-    unique: true,
+    // required: [true, 'FirstName is required!'],
+    maxLength: [20, 'First Name cannot exceed 20 Characters'],
+    minLength: [3, 'First Name should be greater then 3 characters'],
+  },
+  lastname: {
+    type: String,
+    // // required: [true, 'LastName is required!'],
+    maxLength: [20, 'Last Name cannot exceed 20 Characters'],
+    minLength: [3, 'Last Name should be greater then 3 characters'],
   },
   password: {
     type: String,
-    required: [true, 'Please Enter Your Password'],
-    minLength: [8, 'Password should be greater than 8 characters'],
+    required: [true, "Please Enter Your Password"],
+    minLength: [8, "Password should be greater than 8 characters"],
     select: false,
+  },
+  email: {
+    type: String,
+    // // required: [true, 'Email is required!'],
+    validate: [validator.isEmail, 'Please enter valid email'],
+    unique: true,
   },
   birthdate: {
     type: Date,
-    required: [true, 'Birthdate is Required!'],
+    // // required: [true, 'Birthdate is Required!'],
   },
   status_marital: {
     type: Boolean,
-    required: [true, 'Marital Status is required!'],
+    // // required: [true, 'Marital Status is required!'],
   },
   city: {
     type: String,
-    required: [true, 'City Name is reequired'],
+    // required: [true, 'City Name is reequired'],
   },
   nationality: {
     type: String,
-    required: [true, 'Enter your Nationality'],
+    // required: [true, 'Enter your Nationality'],
   },
   language: {
     type: Boolean,
-    required: [true, 'Enter your language'],
+    // required: [true, 'Enter your language'],
   },
   status_candidate: {
     type: Boolean,
@@ -57,7 +67,7 @@ const candidateSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Enter youor email'],
+    // required: [true, 'Enter youor email'],
     validate: [validator.isEmail, 'please Enter valid email'],
   },
   skype: {
@@ -169,10 +179,10 @@ const candidateSchema = mongoose.Schema({
     default: Date.now,
   },
 });
-candidateSchema.pre('save', async function() {
-  this.password=await bcrypt.hash(this.password, 10);
+candidateSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, 10);
 });
-candidateSchema.methods.comparePassword=async function(password) {
+candidateSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-module.exports=mongoose.model('Candidate', candidateSchema);
+module.exports = mongoose.model('Candidate', candidateSchema);

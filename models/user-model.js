@@ -2,12 +2,20 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const{jwtSecret,jwtExpires} = require("../config/jwt.config")
+const { jwtSecret, jwtExpires } = require("../config/jwt.config");
+const Candidate = require("./candidate-model");
+const { handleError } = require("../helper/utils");
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstname: {
     type: String,
-    required: [true, "Please Enter Your Name"],
+    required: [true, "Please Enter Your First Name"],
+    maxLength: [30, "Name cannot exceed 30 characters"],
+    minLength: [4, "Name should have more than 4 characters"],
+  },
+  lastname: {
+    type: String,
+    required: [true, "Please Enter Your Last Name"],
     maxLength: [30, "Name cannot exceed 30 characters"],
     minLength: [4, "Name should have more than 4 characters"],
   },
@@ -27,6 +35,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "client",
   },
+  language: {
+    type: String,
+    // required: [true, 'Enter your language'],
+  },
+
+  vaccine: {
+    type: Boolean,
+  },
+  city: {
+    type: String,
+    // required: [true, 'City Name is reequired'],
+  },
+  nationality: {
+    type: String,
+    // required: [true, 'Enter your Nationality'],
+  },
+  phone: {
+    type: String,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -48,6 +76,20 @@ userSchema.methods.getJWTToken = function () {
   });
 };
 
+// userSchema.methods.postUser = function (res, data) {
+//   const candidate = Candidate.create(data)
+//   candidate.save((err) => {
+//     if (err) handleError(res, "Unable to create candidate")
+//     else {
+//       res.status(201).json({
+//         success: true,
+//         data,
+//         message: 'Created'
+//       })
+//     }
+//   })
+// };
+
 // Compare Password
 
 userSchema.methods.comparePassword = async function (password) {
@@ -56,6 +98,6 @@ userSchema.methods.comparePassword = async function (password) {
 
 
 module.exports = mongoose.model("User", userSchema);
-module.exports.get = function(callback, limit) {
+module.exports.get = function (callback, limit) {
   User.find(callback).limit(limit);
 };

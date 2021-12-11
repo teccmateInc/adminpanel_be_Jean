@@ -1,19 +1,16 @@
 const express=require('express');
-const {getAllCandidate, createCandidate, getCandidate, updateCandidate, deleteCandidate, candidateLogin} = require('../controllers/candidate-controller');
-const {isAuthenticatedUser}=require("../middlewares/auth")
+const {getSingleCandidate, updateACandidate, deleteACandidate, getCandidates, createCandidate} = require('../controllers/candidate-controller');
+const {isAuthenticatedUser, AuthorizeRoles}=require("../middlewares/auth")
 const CandidateRouter=express.Router();
 
 CandidateRouter.route('/')
-    .get(getAllCandidate)
-    .post(createCandidate);
-
-CandidateRouter.route('/login')
-    .post(candidateLogin);
+    .get(getCandidates)
+    .post(createCandidate)
 
 
 CandidateRouter.route('/:candidateId')
-    .get(isAuthenticatedUser,getCandidate).
-    put(isAuthenticatedUser,updateCandidate).
-    delete(deleteCandidate);
+    .get(getSingleCandidate).
+    put(updateACandidate).
+    delete(deleteACandidate);
 
 module.exports=CandidateRouter;

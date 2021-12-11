@@ -1,61 +1,121 @@
 const Candidate=require('../models/candidate-model');
 const mongoose=require('mongoose');
 
-exports.getAllCandidate=async (req, res, next)=>{
-  const Candidates=await Candidate.find();
-  res.status(200).json({
-    success: true,
-    Candidates,
-    message: 'candidates found successfully',
-  });
-};
-exports.candidateLogin=async (req, res, next)=>{
-  const {email, password}=req.body;
-  if (!email || !password) {
-    return res.status(400).json({message: 'enter email and password'});
-  }
-  const user=Candidate.findOne({email}).select('+password');
-  if (!user) {
-    return res.status(401).json({success: false, message: 'Invalid email or password'});
-  }
-  const passwordMatched=await Candidate.comparePassword(password);
-  if (!passwordMatched) {
-    return res.status(401).json({success: false, message: 'Invalid email or password'});
-  }
-  res.status(200).json({message: 'Candidate found successfully'});
-};
-exports.createCandidate=async (req, res, next)=>{
-  // const candidate=await Candidate.create(req.body)
-  res.status(201).json({
-    success: true,
-    // candidate
-    message: 'candidate created successfully',
-  });
-};
-exports.getCandidate=async (req, res, next)=>{
-  // const candidate=await Candidate.create(req.params.id)
-  res.status(200).json({
-    success: true,
-    // candidate
-    message: 'candidate found successfully',
-  });
-};
-exports.updateCandidate=async (req, res, next)=>{
-  // const candidate=await Candidate.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true,useFindAndModify:false})
-  // if(!candidate){
-  //     next(err=>res.err)
-  // }
+const { strictValidArrayWithMinLength , handleError } = require('../helper/utils');
 
-  res.status(200).json({
-    success: true,
-    // candidate
-    message: 'candidate updated successfully',
-  });
-};
-exports.deleteCandidate=async (req, res, next)=>{
-  // await Candidate.findByIdAndRemove(req.params.id)
-  res.status(201).json({
-    success: true,
-    message: 'candidate deleted successfully',
-  });
-};
+//get all candidates
+exports.getCandidates = async (req, res, next) => {
+  try {
+    const candidates= await Candidate.find()
+    if (strictValidArrayWithMinLength(candidates, 1)) {
+      res.status(200).json({
+        success: true,
+        candidates
+      })
+    }
+    else {
+      res.status(401).json({
+        success: false,
+        message: "nothing in candidates array"
+      })
+
+    }
+  } catch (err) {
+    handleError (res, "Candidates not found")
+  }
+}
+
+//create new candidate
+exports.createCandidate = async (req, res, next) => {
+  try {
+    const candidate = await Candidate.create(req.body)
+    candidate.save((err) => {
+      if (err) handleError(res, err);
+      else res.json({ status: 'success', data: candidate });
+    });
+  } catch (error) {
+    console.log(error)
+    if (error && error.code === 11000) handleError(res, 'Email is already exists!')
+    else handleError(res, "candidate not created")
+  }
+}
+
+//get candidate
+exports.getSingleCandidate = async (req, res, next) => {
+  try {
+    const candidate = await Candidate.findById(req.params.candidateId)
+    if (strictValidObjectWithKeys(candidate)) {
+
+      res.status(200).json({
+        success: true,
+        message: "Candidate found successfully",
+        candidate
+      })
+    } else {
+      res.status(200).json({
+        success: false,
+        message: "Candidate not found"
+      })
+    }
+  } catch (err) {
+    console.log(err)
+    handleError(res, "candidate not found")
+  }
+}
+
+//update candidate
+exports.updateACandidate = async (req, res, next) => {
+  try {
+    let candidate = await Candidate.findById(req.params.candidateId)
+    if (strictValidObjectWithKeys(candidate)) {
+      candidate = await Candidate.findByIdAndUpdate(req.params.candidateId, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+
+      })
+      candidate.save((err) => {
+        if (err) {
+          handleError(res, "candidate can not update")
+        }
+      })
+      res.status(200).json({
+        success: true,
+        message: "candidate updated successfully"
+      })
+    }
+    else {
+      res.status(200).json({
+        success: false,
+        message: "candidate not found"
+      })
+    }
+  }
+  catch (err) {
+    handleError(res, "Candidate not found")
+  }
+}
+
+//delete candidate
+exports.deleteACandidate = async (req, res, next) => {
+  try {
+    let candidate = await Candidate.findById(req.params.candidateId)
+    if (strictValidObjectWithKeys(user)) {
+
+      candidate = await Candidate.findByIdAndDelete(req.params.candidateId)
+      res.status(200).json({
+        success: true,
+        message: "Candidate deleted successfully"
+      })
+    }
+    else {
+      res.status(400).json({
+        success: false,
+        message: "User not found"
+      })
+    }
+  }
+  catch (err) {
+    handleError(res, "something went wrong")
+  }
+}

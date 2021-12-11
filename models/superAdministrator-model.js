@@ -1,14 +1,15 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
+const bcrypt=require('bcryptjs')
 
 const SuperAdminSchema=mongoose.Schema({
-  first_name: {
+  firstname: {
     type: String,
     required: [true, 'First name is required!'],
     maxLength: [11, 'Phone number cannot exceed 11 Characters'],
     minLength: [3, 'Phone number should be greater then 3 characters'],
   },
-  last_name: {
+  lastname: {
     type: String,
     required: [true, 'Last Name is required!'],
     maxLength: [11, 'Phone number cannot exceed 11 Characters'],
@@ -27,4 +28,11 @@ const SuperAdminSchema=mongoose.Schema({
     select: false,
   },
 });
+SuperAdminSchema.pre('save', async function() {
+  this.password=await bcrypt.hash(this.password, 10);
+});
+SuperAdminSchema.methods.comparePassword=async function(password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 module.exports=mongoose.model('superAdmins', SuperAdminSchema);

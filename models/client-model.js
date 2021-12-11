@@ -1,14 +1,19 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
+const bcrypt=require('bcryptjs')
 
 const clientSchema=mongoose.Schema({
-  first_name: {
+  userId: {
+    type: String,
+    required: true,
+  },
+  firstname: {
     type: String,
     required: [true, 'First name is required!'],
     maxLength: [11, 'Phone number cannot exceed 11 Characters'],
     minLength: [3, 'Phone number should be greater then 3 characters'],
   },
-  last_name: {
+  lastname: {
     type: String,
     required: [true, 'Last Name is required!'],
     maxLength: [11, 'Phone number cannot exceed 11 Characters'],
@@ -22,35 +27,35 @@ const clientSchema=mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please Enter Your Password'],
-    minLength: [8, 'Password should be greater than 8 characters'],
+    required: [true, "Please Enter Your Password"],
+    minLength: [8, "Password should be greater than 8 characters"],
     select: false,
   },
   phone: {
     type: String,
-    required: [true, 'given Type is String'],
+    // required: [true, 'given Type is String'],
     maxLength: [20, 'Phone number cannot exceed 20 Characters'],
     minLength: [8, 'Phone number should be greater then 8 characters'],
   },
   state: {
     type: String,
-    required: [],
+    // required: [],
   },
   address: {
     type: String,
-    required: [true],
+    // required: [true],
   },
   zip_code: {
     type: Number,
-    required: true,
+    // required: true,
   },
   city: {
     type: String,
-    required: true,
+    // required: true,
   },
   country: {
     type: String,
-    required: [],
+    // required: [],
   },
   admin_contact: {
     type: String,
@@ -67,12 +72,12 @@ const clientSchema=mongoose.Schema({
   },
   vaccine: {
     type: Boolean,
-    required: [true],
+    // required: [true],
   },
   language: {
     type: Array,
     default: ['en'],
-    required: [true, ''],
+    // required: [true, ''],
   },
   pa: {
     type: String,
@@ -80,5 +85,10 @@ const clientSchema=mongoose.Schema({
   },
 
 });
-
+clientSchema.pre('save', async function() {
+  this.password=await bcrypt.hash(this.password, 10);
+});
+clientSchema.methods.comparePassword=async function(password) {
+  return await bcrypt.compare(password, this.password);
+};
 module.exports=mongoose.model('clients', clientSchema);

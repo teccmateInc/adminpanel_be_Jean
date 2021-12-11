@@ -18,7 +18,7 @@ user.route("/login").post(userController.UserLogin);
 user.route("/register").post(userController.registerUser);
 user.route("/logout").get(userController.logoutUser);
 
-user.route("/register/candidate").post(userController.registerCandidate);
+// user.route("/register/candidate").post(userController.registerCandidate);
 
 user.route("/clients").get(isAuthenticatedUser,AuthorizeRoles("admin","superadmin"),userController.getAllClients);
 user.route("/client").post(isAuthenticatedUser,AuthorizeRoles("admin","superadmin"),userController.createNewClient);
