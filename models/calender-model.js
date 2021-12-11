@@ -1,18 +1,23 @@
-const mongoose=require('mongoose')
+const mongoose=require('mongoose');
 const CalenderSchema=new mongoose.Schema({
-        date:{
-            type:Date,
-            required:true
-        },
-        from:{
-            type:String,
-            required:true
-        },
-        to:{
-            type:String,
-            required:true
-        },
+  date: {
+    type: Date,
+    required: true,
+  },
+  from: {
+    type: String,
+    required: true,
+  },
+  to: {
+    type: String,
+    required: true,
+  },
+  user:{
+      type:mongoose.Schema.ObjectId,
+      ref:"User",
+      required:true
+  }
 
-    
-})
-module.exports=mongoose.model("Calender",CalenderSchema);
+
+});
+module.exports=mongoose.model('Calender', CalenderSchema);

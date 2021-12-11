@@ -20,8 +20,8 @@ const candidateSchema = mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please Enter Your Password"],
-    minLength: [8, "Password should be greater than 8 characters"],
+    required: [true, 'Please Enter Your Password'],
+    minLength: [8, 'Password should be greater than 8 characters'],
     select: false,
   },
   email: {
@@ -179,10 +179,10 @@ const candidateSchema = mongoose.Schema({
     default: Date.now,
   },
 });
-candidateSchema.pre('save', async function () {
+candidateSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
-candidateSchema.methods.comparePassword = async function (password) {
+candidateSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 module.exports = mongoose.model('Candidate', candidateSchema);

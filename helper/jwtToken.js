@@ -1,18 +1,17 @@
-const {cookieExpire}=require("../config/cookie.config")
+const {cookieExpire}=require('../config/cookie.config');
 
-const sendToken=(user,statusCode,res)=>{
+const sendToken=(user, statusCode, res)=>{
   const token = user.getJWTToken();
-   
-  //options for cookie
+
+  // options for cookie
   const options={
-    expires:new Date(Date.now() + cookieExpire*24*60*60*1000),
-    httpOnly:true
+    expires: new Date(Date.now() + cookieExpire*24*60*60*1000),
+    httpOnly: true,
   };
-  res.status(statusCode).cookie("token",token ,options ).json({
-    succes:true,
+  res.status(statusCode).cookie('token', token, options ).json({
+    succes: true,
     user,
     token,
-  })
-  
-}
+  });
+};
 module.exports=sendToken;

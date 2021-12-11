@@ -1,11 +1,11 @@
 const express=require('express');
 const {getSingleCandidate, updateACandidate, deleteACandidate, getCandidates, createCandidate} = require('../controllers/candidate-controller');
-const {isAuthenticatedUser, AuthorizeRoles}=require("../middlewares/auth")
+const {isAuthenticatedUser, AuthorizeRoles}=require('../middlewares/auth');
 const CandidateRouter=express.Router();
 
 CandidateRouter.route('/')
     .get(getCandidates)
-    .post(createCandidate)
+    .post(createCandidate);
 
 
 CandidateRouter.route('/:candidateId')

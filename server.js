@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const cookieParser=require("cookie-parser");
-const useragent=require("express-useragent");
+const cookieParser=require('cookie-parser');
+const useragent=require('express-useragent');
 // Import routes
 const apiRoutes = require('./api-routes/api-routes');
 
@@ -36,7 +36,7 @@ try {
 }
 
 // Send message for default '/' URL
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
   res.send(req.useragent);
 });
 app.get('/', (req, res) => res.send(`<h1>Welcome To Admin Panel!</h1>`));

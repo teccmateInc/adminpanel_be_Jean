@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
-const bcrypt=require('bcryptjs')
+const bcrypt=require('bcryptjs');
 
 const clientSchema=mongoose.Schema({
   userId: {
@@ -27,8 +27,8 @@ const clientSchema=mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please Enter Your Password"],
-    minLength: [8, "Password should be greater than 8 characters"],
+    required: [true, 'Please Enter Your Password'],
+    minLength: [8, 'Password should be greater than 8 characters'],
     select: false,
   },
   phone: {

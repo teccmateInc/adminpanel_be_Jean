@@ -13,7 +13,7 @@ router.post('/login', (req, res, next)=>{
 
 });
 
-const { isAuthenticatedUser, AuthorizeRoles } = require('../middlewares/auth');
+const {isAuthenticatedUser, AuthorizeRoles} = require('../middlewares/auth');
 const AdminRouter = require('./adminRoutes');
 const CandidateRouter = require('./candidateRoutes');
 const userRoutes = require('./admins-routes');
@@ -22,9 +22,9 @@ const CalendarRouter = require('./calender-routes');
 // User routes
 router.use('/user', userRoutes);
 router.use('/candidates', CandidateRouter);
-router.use("/admin",AdminRouter)
-router.use("/order",OrderRouter);
-router.use("/calendar",CalendarRouter);
+router.use('/admin', AdminRouter);
+router.use('/order', OrderRouter);
+router.use('/calendar', CalendarRouter);
 
 
 // Export API routes

@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
-const bcrypt=require('bcryptjs')
+const bcrypt=require('bcryptjs');
 
 const AdministratorSchema=mongoose.Schema({
   userId: {
@@ -19,7 +19,7 @@ const AdministratorSchema=mongoose.Schema({
     maxLength: [11, 'Phone number cannot exceed 11 Characters'],
     minLength: [3, 'Phone number should be greater then 3 characters'],
   },
-  
+
   email: {
     type: String,
     required: [],
@@ -31,7 +31,7 @@ const AdministratorSchema=mongoose.Schema({
     required: [true, 'Please Enter Your Password'],
     minLength: [8, 'Password should be greater than 8 characters'],
     select: false,
-},
+  },
 });
 
 AdministratorSchema.pre('save', async function() {
