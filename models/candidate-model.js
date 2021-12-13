@@ -176,17 +176,17 @@ const candidateSchema = schema({
   },
   createdBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
+    ref: 'User',
   },
   updatedBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
-  }
+    ref: 'User',
+  },
 });
-candidateSchema.pre('save', async function () {
+candidateSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
-candidateSchema.methods.comparePassword = async function (password) {
+candidateSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 module.exports = mongoose.model('Candidate', candidateSchema);

@@ -20,14 +20,14 @@ const utils = {
   },
   generateValidationsErrors: (errors) => {
     if (utils.strictValidObjectWithKeys(errors)) {
-      const { errors: errs, _message: msg } = errors;
+      const {errors: errs, _message: msg} = errors;
       console.log(utils.strictValidObjectWithKeys(errs));
       if (utils.strictValidObjectWithKeys(errs)) {
         const requiredFields = Object.keys(errs).map((key) => {
-          return { ...errs[key]?.properties };
+          return {...errs[key]?.properties};
         });
-        return { requiredFields, msg };
-      } return { msg };
+        return {requiredFields, msg};
+      } return {msg};
     }
   },
   strictValidObject: (obj) => {

@@ -79,17 +79,17 @@ const clientSchema = schema({
   },
   createdBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
+    ref: 'User',
   },
   updatedBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
-  }
+    ref: 'User',
+  },
 });
-clientSchema.pre('save', async function () {
+clientSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
-clientSchema.methods.comparePassword = async function (password) {
+clientSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 module.exports = mongoose.model('clients', clientSchema);

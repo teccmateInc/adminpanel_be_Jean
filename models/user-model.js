@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { jwtSecret, jwtExpires } = require('../config/jwt.config');
+const {jwtSecret, jwtExpires} = require('../config/jwt.config');
 
 const userSchema = new mongoose.Schema({
   firstname: {
@@ -32,10 +32,10 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'client',
-  }
-}, { timestamps: true });
+  },
+}, {timestamps: true});
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -44,8 +44,8 @@ userSchema.pre('save', async function (next) {
 });
 
 // JWT TOKEN
-userSchema.methods.getJWTToken = function () {
-  return jwt.sign({ id: this._id }, jwtSecret, {
+userSchema.methods.getJWTToken = function() {
+  return jwt.sign({id: this._id}, jwtSecret, {
     expiresIn: jwtExpires,
   });
 };
@@ -53,12 +53,12 @@ userSchema.methods.getJWTToken = function () {
 
 // Compare Password
 
-userSchema.methods.comparePassword = async function (password) {
+userSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
 
 module.exports = mongoose.model('User', userSchema);
-module.exports.get = function (callback, limit) {
+module.exports.get = function(callback, limit) {
   User.find(callback).limit(limit);
 };

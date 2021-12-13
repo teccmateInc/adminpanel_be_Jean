@@ -6,7 +6,7 @@ const router = express.Router;
 const adminRouter = router();
 
 // Access Allowed
-let allowedAccess = authorizeRoles('superadmin')
+const allowedAccess = authorizeRoles('superadmin');
 
 adminRouter.route('/')
     .get(isAuthenticatedUser, allowedAccess, getAllAdmins)

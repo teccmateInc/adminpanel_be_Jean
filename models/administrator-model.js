@@ -35,18 +35,18 @@ const administratorSchema = schema({
   },
   createdBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
+    ref: 'User',
   },
   updatedBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User"
-  }
+    ref: 'User',
+  },
 });
 
-administratorSchema.pre('save', async function () {
+administratorSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
-administratorSchema.methods.comparePassword = async function (password) {
+administratorSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 module.exports = mongoose.model('Admin', administratorSchema);

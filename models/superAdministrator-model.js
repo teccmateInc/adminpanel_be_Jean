@@ -32,14 +32,14 @@ const superAdminSchema=schema({
     minLength: [8, 'Password should be greater than 8 characters'],
     select: false,
   },
-  createdBy:{
-    type:mongoose.Schema.ObjectId,
-    ref:"User"
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
   },
-  updatedBy:{
-    type:mongoose.Schema.ObjectId,
-    ref:"User"
-  }
+  updatedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 });
 superAdminSchema.pre('save', async function() {
   this.password=await bcrypt.hash(this.password, 10);

@@ -1,18 +1,18 @@
 const SuperAdmin = require('../models/superAdministrator-model');
 const User = require('../models/user-model');
 
-const { handleError,
+const {handleError,
   strictValidObjectWithKeys,
   strictValidArrayWithMinLength,
   generateValidationsErrors,
-  handleErrorWithStatus } = require('../helper/utils');
+  handleErrorWithStatus} = require('../helper/utils');
 
 
 exports.getSuperAdmin = async (req, res, next) => {
   try {
     const user = await SuperAdmin.find()
-      .populate('createdBy')
-      .populate("updatedBy");
+        .populate('createdBy')
+        .populate('updatedBy');
     if (strictValidArrayWithMinLength(user, 1)) {
       res.status(200).json({
         success: true,
@@ -20,7 +20,7 @@ exports.getSuperAdmin = async (req, res, next) => {
         data: user,
       });
     } else {
-      res.status(400).json({ success: false, message: 'no SuperAdmin found' });
+      res.status(400).json({success: false, message: 'no SuperAdmin found'});
     }
   } catch (err) {
     handleError(res, 'SuperAmin not found');
@@ -40,8 +40,8 @@ exports.createSuperAdmin = async (req, res, next) => {
       else {
         const superAdmin = await SuperAdmin.create({
           ...req.body, userId: Superadmin.id,
-          createdBy: req.user
-        })
+          createdBy: req.user,
+        });
         superAdmin.save((err) => {
           if (err) {
             handleError(res, 'SuperAdmin not created');
@@ -59,7 +59,7 @@ exports.createSuperAdmin = async (req, res, next) => {
     if (err && err.code === 11000) handleError(res, 'Email is already exists!');
     else {
       handleError(res, 'SuperAdmin not created',
-        generateValidationsErrors(err));
+          generateValidationsErrors(err));
     }
   }
 };
@@ -71,15 +71,15 @@ exports.updateSuperAdmin = async (req, res, next) => {
     if (strictValidObjectWithKeys(superadmin)) {
       if (strictValidObjectWithKeys(req.body)) {
         superadmin = await User.findByIdAndUpdate(
-          req.params.superAdminId,
-          req.body,
-          { new: true, runValidators: false, useFindAndModify: false });
+            req.params.superAdminId,
+            req.body,
+            {new: true, runValidators: false, useFindAndModify: false});
 
         superadmin = await SuperAdmin.findOneAndUpdate({
           userId: req.params.superAdminId,
         },
-          { ...req.body, updatedBy: req.user },
-          { new: true, runValidators: false, useFindAndModify: false });
+        {...req.body, updatedBy: req.user},
+        {new: true, runValidators: false, useFindAndModify: false});
       }
       res.status(200).json({
         success: true,
@@ -94,9 +94,18 @@ exports.updateSuperAdmin = async (req, res, next) => {
     }
   } catch (err) {
     if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
-      handleError(res, 'Super admin not found!', generateValidationsErrors(err))
+      handleError(
+          res,
+          'Super admin not found!',
+          generateValidationsErrors(err),
+      );
+    } else {
+      handleErrorWithStatus(
+          res,
+          404,
+          'Something wents wrong. Try again later!',
+      );
     }
-    else handleErrorWithStatus(res, 404, 'Something wents wrong. Try again later!');
   }
 };
 

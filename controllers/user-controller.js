@@ -1,6 +1,6 @@
 // Import User Model
 const User = require('../models/user-model');
-const { handleError, strictValidArrayWithMinLength } = require('../helper/utils');
+const {handleError, strictValidArrayWithMinLength} = require('../helper/utils');
 const sendToken = require('../helper/jwtToken');
 
 // Handle get Users actions
@@ -26,11 +26,11 @@ exports.getUsers = async (_, res) => {
 // user login
 exports.UserLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password required!' });
+      return res.status(400).json({message: 'Email and password required!'});
     }
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({email}).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false, message: 'Invalid email or password!',
@@ -44,16 +44,25 @@ exports.UserLogin = async (req, res) => {
     } else sendToken(user, 200, res);
   } catch (err) {
     if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
-      handleError(res, 'Invalid email and password!', generateValidationsErrors(err))
+      handleError(
+          res,
+          'Invalid email and password!',
+          generateValidationsErrors(err),
+      );
+    } else {
+      handleErrorWithStatus(
+          res,
+          404,
+          'Something wents wrong. Try again later!',
+      );
     }
-    else handleErrorWithStatus(res, 404, 'Something wents wrong. Try again later!');
   }
 };
 
 
 exports.registerUser = async (req, res, next) => {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const {firstname, lastname, email, password} = req.body;
     const user = await User.create({
       firstname,
       lastname,
@@ -64,9 +73,18 @@ exports.registerUser = async (req, res, next) => {
     sendToken(user, 201, res);
   } catch (err) {
     if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
-      handleError(res, 'All fields are required!', generateValidationsErrors(err))
+      handleError(
+          res,
+          'All fields are required!',
+          generateValidationsErrors(err),
+      );
+    } else {
+      handleErrorWithStatus(
+          res,
+          404,
+          'Something wents wrong. Try again later!',
+      );
     }
-    else handleErrorWithStatus(res, 404, 'Something wents wrong. Try again later!');
   }
 };
 

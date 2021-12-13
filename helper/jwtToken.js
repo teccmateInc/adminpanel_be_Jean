@@ -1,4 +1,4 @@
-const { cookieExpire } = require('../config/cookie.config');
+const {cookieExpire} = require('../config/cookie.config');
 
 // Create JWT token
 const sendToken = (user, statusCode, res) => {

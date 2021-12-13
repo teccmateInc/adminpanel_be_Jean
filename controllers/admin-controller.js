@@ -12,15 +12,15 @@ const {
 exports.getAllAdmins = async (req, res, next) => {
   try {
     const admins = await Admin.find()
-      .populate("createdBy")
-      .populate("updatedBy");
+        .populate('createdBy')
+        .populate('updatedBy');
     if (strictValidArrayWithMinLength(admins, 1)) {
       res.status(200).json({
         success: true,
         data: admins,
       });
     } else {
-      res.status(400).json({ success: false, message: 'no Admin found' });
+      res.status(400).json({success: false, message: 'no Admin found'});
     }
   } catch (err) {
     handleError(res, 'invalid admin');
@@ -31,8 +31,8 @@ exports.getAllAdmins = async (req, res, next) => {
 exports.getAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findById(req.params.adminId)
-      .populate("createdBy")
-      .populate("updatedBy");
+        .populate('createdBy')
+        .populate('updatedBy');
     if (strictValidObjectWithKeys(admin)) {
       res.status(200).json({
         success: true,
@@ -54,7 +54,7 @@ exports.getAdmin = async (req, res, next) => {
 // create admin
 exports.createNewAdmin = async (req, res, next) => {
   try {
-    const { firstname, lastname, email, password, role = 'admin' } = req.body;
+    const {firstname, lastname, email, password, role = 'admin'} = req.body;
     const user = await User.create({
       firstname,
       lastname,
@@ -65,7 +65,11 @@ exports.createNewAdmin = async (req, res, next) => {
     user.save(async (err) => {
       if (err) handleError(res, err);
       else {
-        const admin = await Admin.create({ ...req.body, userId: user.id, createdBy: req.user });
+        const admin = await Admin.create({
+          ...req.body,
+          userId: user.id,
+          createdBy: req.user,
+        });
         admin.save((err) => {
           if (err) {
             handleError(res, 'Admin not created');
@@ -97,8 +101,8 @@ exports.updateAdmin = async (req, res, next) => {
       });
       user = await Admin.findOneAndUpdate({
         userId: req.params.adminId,
-      }, { ...req.body, updatedBy: req.user },
-        { new: true, runValidators: false, useFindAndModify: false });
+      }, {...req.body, updatedBy: req.user},
+      {new: true, runValidators: false, useFindAndModify: false});
     }
     res.status(200).json({
       success: true,
@@ -107,9 +111,14 @@ exports.updateAdmin = async (req, res, next) => {
     });
   } else {
     if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
-      handleError(res, 'Admin not found!', generateValidationsErrors(err))
+      handleError(res, 'Admin not found!', generateValidationsErrors(err));
+    } else {
+      handleErrorWithStatus(
+          res,
+          404,
+          'Something wents wrong. Try again later!',
+      );
     }
-    else handleErrorWithStatus(res, 404, 'Something wents wrong. Try again later!');
   }
 };
 
@@ -124,7 +133,7 @@ exports.deleteAdmin = async (req, res, next) => {
       });
     }
     user = await User.findByIdAndDelete(req.params.adminId);
-    user = await Admin.findOneAndRemove({ userId: req.params.adminId });
+    user = await Admin.findOneAndRemove({userId: req.params.adminId});
     res.status(200).json({
       success: true,
       message: 'Admin deleted successfully',

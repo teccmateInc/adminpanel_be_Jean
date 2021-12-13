@@ -1,10 +1,10 @@
 const expressRouter = require('express').Router;
 const userController = require('../controllers/user-controller');
-const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
+const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
 
 const user = expressRouter();
 
-// GET: all users route only for 'superadmin' 
+// GET: all users route only for 'superadmin'
 user.route('/')
     .get(
         isAuthenticatedUser,
