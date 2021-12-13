@@ -1,113 +1,152 @@
-const Candidate=require('../models/candidate-model');
-const mongoose=require('mongoose');
+const Candidate = require('../models/candidate-model');
+const User = require('../models/user-model');
+const {
+  handleError,
+  strictValidObjectWithKeys,
+  strictValidArrayWithMinLength,
+  generateValidationsErrors,
+} = require('../helper/utils');
 
-const {strictValidArrayWithMinLength, handleError} = require('../helper/utils');
+// create new candidate
+exports.createNewCandidate = async (req, res, next) => {
+  try {
+    const { firstname, lastname, email, password, role = 'candidate' } = req.body;
+    const user = await User.create({
+      firstname, lastname, email, password, role,
+    });
+    user.save(async (err, user) => {
+      if (err) handleError(res, err);
+      else {
+        const candidate = await Candidate.create({
+          ...req.body, userId: user.id, createdBy: req.user
+        });
+        candidate.save((err) => {
+          if (err) handleError(res, 'Unable to create candidate!');
+          else {
+            res.status(201).json({
+              success: true,
+              data: candidate,
+              message: 'Candidate created succcessfully!',
+            });
+          }
+        });
+      }
+    });
+  } catch (err) {
+    if (err && err.code === 11000) handleError(res, 'Email is already exists!');
+    else {
+      handleError(
+        res,
+        'Candidate not created!',
+        generateValidationsErrors(err));
+    }
+  }
+};
 
 // get all candidates
-exports.getCandidates = async (req, res, next) => {
+exports.getAllCandidates = async (req, res, next) => {
   try {
-    const candidates= await Candidate.find();
-    if (strictValidArrayWithMinLength(candidates, 1)) {
+    const users = await Candidate.find()
+      .populate("createdBy")
+      .populate("updatedBy");
+    if (strictValidArrayWithMinLength(users, 1)) {
       res.status(200).json({
         success: true,
-        candidates,
+        users,
       });
     } else {
       res.status(401).json({
         success: false,
-        message: 'nothing in candidates array',
+        message: 'Candidates Not found!',
       });
     }
   } catch (err) {
-    handleError(res, 'Candidates not found');
-  }
-};
-
-// create new candidate
-exports.createCandidate = async (req, res, next) => {
-  try {
-    const candidate = await Candidate.create(req.body);
-    candidate.save((err) => {
-      if (err) handleError(res, err);
-      else res.json({status: 'success', data: candidate});
-    });
-  } catch (error) {
-    console.log(error);
-    if (error && error.code === 11000) handleError(res, 'Email is already exists!');
-    else handleError(res, 'candidate not created');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };
 
 // get candidate
-exports.getSingleCandidate = async (req, res, next) => {
+exports.getCandidate = async (req, res, next) => {
   try {
-    const candidate = await Candidate.findById(req.params.candidateId);
+    const candidate = await Candidate.findById(req.params.candidateId)
+      .populate("createdBy")
+      .populate("updatedBy");
     if (strictValidObjectWithKeys(candidate)) {
       res.status(200).json({
         success: true,
-        message: 'Candidate found successfully',
+        message: 'Candidate found successfully!',
         candidate,
       });
     } else {
       res.status(200).json({
         success: false,
-        message: 'Candidate not found',
+        message: 'Candidate not found!',
       });
     }
   } catch (err) {
-    console.log(err);
-    handleError(res, 'candidate not found');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };
 
 // update candidate
-exports.updateACandidate = async (req, res, next) => {
+exports.updateCandidate = async (req, res, next) => {
   try {
-    let candidate = await Candidate.findById(req.params.candidateId);
+    let candidate = await User.findById(req.params.userId);
     if (strictValidObjectWithKeys(candidate)) {
-      candidate = await Candidate.findByIdAndUpdate(req.params.candidateId, req.body, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-
-      });
-      candidate.save((err) => {
-        if (err) {
-          handleError(res, 'candidate can not update');
-        }
-      });
-      res.status(200).json({
+      if (strictValidObjectWithKeys(req.body)) {
+        candidate = await User.findByIdAndUpdate(req.params.userId, req.body, {
+          new: true,
+          runValidators: false,
+          useFindAndModify: false,
+        });
+        candidate = await Candidate.findOneAndUpdate({
+          userId: req.params.userId,
+        }, { ...req.body, updatedBy: req.user },
+          {
+            new: true,
+            runValidators: false,
+            useFindAndModify: false,
+          });
+      }
+      res.status(201).json({
         success: true,
-        message: 'candidate updated successfully',
+        message: 'Candidate updated successfully!',
+        data: candidate,
       });
     } else {
       res.status(200).json({
         success: false,
-        message: 'candidate not found',
+        message: 'Candidate not found!',
       });
     }
   } catch (err) {
-    handleError(res, 'Candidate not found');
+    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+      handleError(res, 'Candidate not found!', generateValidationsErrors(err))
+    } else handleError(res, 'Something wents wrong. Try again later!');
   }
 };
 
 // delete candidate
-exports.deleteACandidate = async (req, res, next) => {
+exports.deleteCandidate = async (req, res, next) => {
   try {
-    let candidate = await Candidate.findById(req.params.candidateId);
+    let user = await User.findById(req.params.userId);
     if (strictValidObjectWithKeys(user)) {
-      candidate = await Candidate.findByIdAndDelete(req.params.candidateId);
+      user = await User.findByIdAndDelete(req.params.userId);
+
+      user = await Candidate.findOneAndRemove({
+        userId: req.params.userId,
+      });
       res.status(200).json({
         success: true,
-        message: 'Candidate deleted successfully',
+        message: 'Candidate deleted successfully!',
       });
     } else {
       res.status(400).json({
         success: false,
-        message: 'User not found',
+        message: 'Candidate not found!',
       });
     }
   } catch (err) {
-    handleError(res, 'something went wrong');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };

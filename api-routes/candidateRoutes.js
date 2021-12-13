@@ -1,16 +1,26 @@
-const express=require('express');
-const {getSingleCandidate, updateACandidate, deleteACandidate, getCandidates, createCandidate} = require('../controllers/candidate-controller');
-const {isAuthenticatedUser, AuthorizeRoles}=require('../middlewares/auth');
-const CandidateRouter=express.Router();
+const express = require('express');
+const router = express.Router;
+const {
+  getAllCandidates,
+  createNewCandidate,
+  getCandidate,
+  updateCandidate,
+  deleteCandidate,
+} = require('../controllers/candidate-controller');
+const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
+const candidateRouter = router();
 
-CandidateRouter.route('/')
-    .get(getCandidates)
-    .post(createCandidate);
+const allowedRoles = authorizeRoles('admin', 'superadmin');
+candidateRouter.route('/')
+    .get(isAuthenticatedUser, allowedRoles, getAllCandidates)
+    .post(isAuthenticatedUser, allowedRoles, createNewCandidate);
 
 
-CandidateRouter.route('/:candidateId')
-    .get(getSingleCandidate).
-    put(updateACandidate).
-    delete(deleteACandidate);
+candidateRouter.route('/:candidateId')
+    .get(isAuthenticatedUser, getCandidate);
 
-module.exports=CandidateRouter;
+candidateRouter.route('/:userId')
+    .put(isAuthenticatedUser, allowedRoles, updateCandidate)
+    .delete(isAuthenticatedUser, allowedRoles, deleteCandidate);
+
+module.exports = candidateRouter;

@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const validator=require('validator');
-const OrderSchema=mongoose.Schema({
+const schema=mongoose.Schema;
+const orderSchema=schema({
   email: {
     type: String,
     required: [true, 'Enter your Email'],
     validate: [validator.isEmail, 'please enter valid email'],
+    unique: true,
   },
   vaccine: {
     type: Boolean,
@@ -18,11 +20,13 @@ const OrderSchema=mongoose.Schema({
     type: String,
     required: [true, 'Enter Position'],
   },
-  status_lead: {
+  statusLead: {
     type: String,
     default: '',
   },
-  sent_profile: {
+  sentProfile: {
+    type: String,
+    default: '',
 
   },
   user: {
@@ -30,6 +34,5 @@ const OrderSchema=mongoose.Schema({
     ref: 'User',
     required: true,
   },
-
 });
-module.exports=mongoose.model('Order', OrderSchema);
+module.exports=mongoose.model('Order', orderSchema);

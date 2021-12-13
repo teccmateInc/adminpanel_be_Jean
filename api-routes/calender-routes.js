@@ -1,15 +1,24 @@
-const express=require('express');
-const {getAllCalanders, createCalander, getCalander, updateCalander, deleteCalender} = require('../controllers/calender-controller');
-const {isAuthenticatedUser, AuthorizeRoles} = require('../middlewares/auth');
-const CalendarRouter=express.Router();
+const express = require('express');
+const router = express.Router;
+const {
+  getAllCalanders,
+  createCalander,
+  getCalander,
+  updateCalander,
+  deleteCalender,
+} = require('../controllers/calender-controller');
+const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
+const calendarRouter = router();
 
-const allowedRoles = AuthorizeRoles('admin', 'superadmin');
-CalendarRouter.route('/')
+const allowedRoles = authorizeRoles('admin', 'superadmin');
+calendarRouter.route('/')
     .get(isAuthenticatedUser, allowedRoles, getAllCalanders)
-    .post(isAuthenticatedUser, AuthorizeRoles('candidate'), createCalander);
+    .post(isAuthenticatedUser, authorizeRoles('candidate'), createCalander);
 
-CalendarRouter.route('/:calendarId')
-    .get(isAuthenticatedUser, AuthorizeRoles('admin', 'superadmin', 'candidate'), getCalander)
+calendarRouter.route('/:calendarId')
+    .get(isAuthenticatedUser,
+        authorizeRoles('admin', 'superadmin', 'candidate'),
+        getCalander)
     .put(isAuthenticatedUser, allowedRoles, updateCalander)
     .delete(isAuthenticatedUser, allowedRoles, deleteCalender);
-module.exports=CalendarRouter;
+module.exports = calendarRouter;

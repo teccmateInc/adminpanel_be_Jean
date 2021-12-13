@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
-const CalenderSchema=new mongoose.Schema({
+const schema=mongoose.Schema;
+
+const calenderSchema=schema({
   date: {
     type: Date,
     required: true,
@@ -12,12 +14,12 @@ const CalenderSchema=new mongoose.Schema({
     type: String,
     required: true,
   },
-  user:{
-      type:mongoose.Schema.ObjectId,
-      ref:"User",
-      required:true
-  }
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 
 
 });
-module.exports=mongoose.model('Calender', CalenderSchema);
+module.exports=mongoose.model('Calender', calenderSchema);

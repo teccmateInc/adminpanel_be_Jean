@@ -1,17 +1,26 @@
-const express=require('express');
-const {getAllOrders, getOrder, createOrder, updateOrder, deleteOrder} = require('../controllers/order-controller');
-const {AuthorizeRoles, isAuthenticatedUser} = require('../middlewares/auth');
-const OrderRouter=express.Router();
+const express = require('express');
+const router = express.Router;
+const {
+  getAllOrders,
+  getOrder,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+} = require('../controllers/order-controller');
+const {authorizeRoles, isAuthenticatedUser} = require('../middlewares/auth');
+const OrderRouter = router();
 
-const allowedRoles = AuthorizeRoles('admin', 'superadmin');
+const allowedRoles = authorizeRoles('admin', 'superadmin');
 
 OrderRouter.route('/')
     .get(getAllOrders, allowedRoles)
-    .post(isAuthenticatedUser, AuthorizeRoles('client'), createOrder);
+    .post(isAuthenticatedUser,
+        authorizeRoles('client', 'superadmin'),
+        createOrder);
 
 OrderRouter.route('/:orderId')
     .get(isAuthenticatedUser, allowedRoles, getOrder)
     .put(isAuthenticatedUser, allowedRoles, updateOrder)
     .delete(isAuthenticatedUser, allowedRoles, deleteOrder);
 
-module.exports=OrderRouter;
+module.exports = OrderRouter;

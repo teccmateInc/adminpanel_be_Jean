@@ -1,9 +1,15 @@
-const {handleError, generateValidationsErrors, strictValidObjectWithKeys, strictValidArrayWithMinLength} = require('../helper/utils');
-const Calendar=require('../models/calender-model');
+const {
+  handleError,
+  generateValidationsErrors,
+  strictValidObjectWithKeys,
+  strictValidArrayWithMinLength,
+} = require('../helper/utils');
+const Calendar = require('../models/calender-model');
 
-exports.getAllCalanders=async (req, res, next)=>{
+exports.getAllCalanders = async (req, res, next) => {
   try {
-    const calendars=await Calendar.find().populate("user","firstname lastname email");
+    const calendars = await Calendar.find()
+        .populate('user', 'firstname lastname email');
     if (strictValidArrayWithMinLength(calendars, 1)) {
       res.status(200).json({
         success: true,
@@ -20,8 +26,9 @@ exports.getAllCalanders=async (req, res, next)=>{
     handleError(res, 'Calendars not found');
   }
 };
-exports.getCalander=async (req, res, next)=>{
-  const calendar=await Calendar.findById(req.params.calendarId).populate("user","firstname lastname email");
+exports.getCalander = async (req, res, next) => {
+  const calendar = await Calendar.findById(req.params.calendarId)
+      .populate('user', 'firstname lastname email');
   if (strictValidObjectWithKeys(calendar)) {
     res.status(200).json({
       success: true,
@@ -34,11 +41,13 @@ exports.getCalander=async (req, res, next)=>{
 };
 
 
-exports.createCalander=async (req, res, next)=>{
+exports.createCalander = async (req, res, next) => {
   try {
-    const {date, to, from}=req.body;
-    const calander=await Calendar.create({date, to, from,user:req.user._id});
-    calander.save((err)=>{
+    const {date, to, from} = req.body;
+    const calander = await Calendar.create({
+      date, to, from, user: req.user._id,
+    });
+    calander.save((err) => {
       if (err) {
         handleError(res, 'Not Created');
       } else {
@@ -52,14 +61,20 @@ exports.createCalander=async (req, res, next)=>{
   } catch (err) {
     console.log(err);
     if (err && err.code === 11000) handleError(res, 'Email is already exists!');
-    else handleError(res, 'Calendar not created', generateValidationsErrors(err));
+    else {
+      handleError(res,
+          'Calendar not created',
+          generateValidationsErrors(err),
+      );
+    }
   }
 };
-exports.updateCalander=async (req, res, next)=>{
+exports.updateCalander = async (req, res, next) => {
   try {
-    let calander=await Calendar.findById(req.params.calendarId);
+    let calander = await Calendar.findById(req.params.calendarId);
     if (strictValidObjectWithKeys(calander)) {
-      calander=await Calendar.findByIdAndUpdate(req.params.calendarId, req.body, {new: true, runValidators: false});
+      calander = await Calendar.findByIdAndUpdate(req.params.calendarId,
+          req.body, {new: true, runValidators: false});
       res.status(200).json({
         success: true,
         message: 'Calander Updated',
@@ -76,11 +91,11 @@ exports.updateCalander=async (req, res, next)=>{
     handleError(res, 'Calender not found');
   }
 };
-exports.deleteCalender=async (req, res, next)=>{
+exports.deleteCalender = async (req, res, next) => {
   try {
-    let calander=await Calendar.findById(req.params.calendarId);
+    let calander = await Calendar.findById(req.params.calendarId);
     if (strictValidObjectWithKeys(calander)) {
-      calander=await Calendar.findByIdAndDelete(req.params.calendarId);
+      calander = await Calendar.findByIdAndDelete(req.params.calendarId);
       res.status(200).json({
         success: true,
         message: 'Calander Deleted',

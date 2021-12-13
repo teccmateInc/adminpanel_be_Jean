@@ -1,8 +1,9 @@
-const mongoose=require('mongoose');
-const validator=require('validator');
-const bcrypt=require('bcryptjs');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const schema = mongoose.Schema;
 
-const AdministratorSchema=mongoose.Schema({
+const administratorSchema = schema({
   userId: {
     type: String,
     required: true,
@@ -32,12 +33,20 @@ const AdministratorSchema=mongoose.Schema({
     minLength: [8, 'Password should be greater than 8 characters'],
     select: false,
   },
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  },
+  updatedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  }
 });
 
-AdministratorSchema.pre('save', async function() {
-  this.password=await bcrypt.hash(this.password, 10);
+administratorSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, 10);
 });
-AdministratorSchema.methods.comparePassword=async function(password) {
+administratorSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-module.exports=mongoose.model('Admin', AdministratorSchema);
+module.exports = mongoose.model('Admin', administratorSchema);

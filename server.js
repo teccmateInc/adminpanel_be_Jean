@@ -41,9 +41,16 @@ app.get('/', function(req, res) {
 });
 app.get('/', (req, res) => res.send(`<h1>Welcome To Admin Panel!</h1>`));
 
-
 // Use Api routes in the App
 app.use('/api', apiRoutes);
+
+// Handle invalid OR 404 request
+app.use((req, res)=>{
+  res.status(404).json({
+    success: false,
+    message: 'Invalid Request',
+  });
+});
 
 // Launch app to listen to specified port
 app.listen(PORT, () => {

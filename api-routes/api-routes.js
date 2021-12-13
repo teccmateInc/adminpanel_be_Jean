@@ -1,31 +1,33 @@
-// Initialize express router
-// eslint-disable-next-line new-cap
-const router = require('express').Router();
+const expressRouter = require('express').Router;
+const router = expressRouter();
 
-// Set default API Response
-router.get('/', (req, res) => {
-  res.json({
-    status: 'success',
-    message: `Successfully! Access to admin panel be API's!`,
-  });
-});
-router.post('/login', (req, res, next)=>{
+// Super admin routes
+const superAdminRouter = require('./superAdminRoute');
+router.use('/superadmin', superAdminRouter);
 
-});
+// Admin routes
+const adminRouter = require('./adminRoutes');
+router.use('/admin', adminRouter);
 
-const {isAuthenticatedUser, AuthorizeRoles} = require('../middlewares/auth');
-const AdminRouter = require('./adminRoutes');
-const CandidateRouter = require('./candidateRoutes');
-const userRoutes = require('./admins-routes');
-const OrderRouter = require('./orderRoutes');
-const CalendarRouter = require('./calender-routes');
 // User routes
+const userRoutes = require('./user-routes');
 router.use('/user', userRoutes);
-router.use('/candidates', CandidateRouter);
-router.use('/admin', AdminRouter);
-router.use('/order', OrderRouter);
+
+// Candidate routes
+const candidateRouter = require('./candidateRoutes');
+router.use('/candidate', candidateRouter);
+
+// Client routes
+const clientRouter = require('./clientRoutes');
+router.use('/client', clientRouter);
+
+// Calender routes
+const CalendarRouter = require('./calender-routes');
 router.use('/calendar', CalendarRouter);
 
+// Order routes
+const orderRouter = require('./orderRoutes');
+router.use('/order', orderRouter);
 
 // Export API routes
 module.exports = router;

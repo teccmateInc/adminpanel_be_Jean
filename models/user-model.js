@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {jwtSecret, jwtExpires} = require('../config/jwt.config');
-const Candidate = require('./candidate-model');
-const {handleError} = require('../helper/utils');
+const { jwtSecret, jwtExpires } = require('../config/jwt.config');
 
 const userSchema = new mongoose.Schema({
   firstname: {
@@ -34,34 +32,10 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'client',
-  },
-  language: {
-    type: String,
-    // required: [true, 'Enter your language'],
-  },
+  }
+}, { timestamps: true });
 
-  vaccine: {
-    type: Boolean,
-  },
-  city: {
-    type: String,
-    // required: [true, 'City Name is reequired'],
-  },
-  nationality: {
-    type: String,
-    // required: [true, 'Enter your Nationality'],
-  },
-  phone: {
-    type: String,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -70,34 +44,21 @@ userSchema.pre('save', async function(next) {
 });
 
 // JWT TOKEN
-userSchema.methods.getJWTToken = function() {
-  return jwt.sign({id: this._id}, jwtSecret, {
+userSchema.methods.getJWTToken = function () {
+  return jwt.sign({ id: this._id }, jwtSecret, {
     expiresIn: jwtExpires,
   });
 };
 
-// userSchema.methods.postUser = function (res, data) {
-//   const candidate = Candidate.create(data)
-//   candidate.save((err) => {
-//     if (err) handleError(res, "Unable to create candidate")
-//     else {
-//       res.status(201).json({
-//         success: true,
-//         data,
-//         message: 'Created'
-//       })
-//     }
-//   })
-// };
 
 // Compare Password
 
-userSchema.methods.comparePassword = async function(password) {
+userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 
 module.exports = mongoose.model('User', userSchema);
-module.exports.get = function(callback, limit) {
+module.exports.get = function (callback, limit) {
   User.find(callback).limit(limit);
 };

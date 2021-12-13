@@ -1,11 +1,24 @@
-const express=require('express');
-const ClientRouter=express.Router();
+const express = require('express');
+const router = express.Router;
 
-ClientRouter.route('/')
-    .get().post();
+const {
+  getAllClients,
+  createNewClient,
+  getClient,
+  updateClient,
+  deleteClient,
+} = require('../controllers/client-controller');
+const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
+const clientRouter = router();
 
-ClientRouter.route('/:clientId')
-    .get().
-    put().
-    delete();
-module.exports=ClientRouter;
+const allowedRoles = authorizeRoles('admin', 'superadmin');
+clientRouter.route('/')
+    .get(isAuthenticatedUser, allowedRoles, getAllClients)
+    .post(isAuthenticatedUser, allowedRoles, createNewClient);
+
+clientRouter.route('/:clientId')
+    .get(isAuthenticatedUser, getClient)
+    .put(isAuthenticatedUser, allowedRoles, updateClient)
+    .delete(isAuthenticatedUser, allowedRoles, deleteClient);
+
+module.exports = clientRouter;

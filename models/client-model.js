@@ -1,8 +1,10 @@
-const mongoose=require('mongoose');
-const validator=require('validator');
-const bcrypt=require('bcryptjs');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-const clientSchema=mongoose.Schema({
+const schema = mongoose.Schema;
+
+const clientSchema = schema({
   userId: {
     type: String,
     required: true,
@@ -21,7 +23,7 @@ const clientSchema=mongoose.Schema({
   },
   email: {
     type: String,
-    required: [],
+    required: [true, 'Please Enter a valid email'],
     validate: [validator.isEmail, 'Please Enter a valid email'],
     unique: true,
   },
@@ -39,23 +41,18 @@ const clientSchema=mongoose.Schema({
   },
   state: {
     type: String,
-    // required: [],
   },
   address: {
     type: String,
-    // required: [true],
   },
   zip_code: {
     type: Number,
-    // required: true,
   },
   city: {
     type: String,
-    // required: true,
   },
   country: {
     type: String,
-    // required: [],
   },
   admin_contact: {
     type: String,
@@ -72,23 +69,27 @@ const clientSchema=mongoose.Schema({
   },
   vaccine: {
     type: Boolean,
-    // required: [true],
   },
   language: {
     type: Array,
     default: ['en'],
-    // required: [true, ''],
   },
   pa: {
     type: String,
-
   },
-
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  },
+  updatedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  }
 });
-clientSchema.pre('save', async function() {
-  this.password=await bcrypt.hash(this.password, 10);
+clientSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, 10);
 });
-clientSchema.methods.comparePassword=async function(password) {
+clientSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-module.exports=mongoose.model('clients', clientSchema);
+module.exports = mongoose.model('clients', clientSchema);

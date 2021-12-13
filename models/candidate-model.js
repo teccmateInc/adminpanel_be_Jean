@@ -1,20 +1,22 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const candidateSchema = mongoose.Schema({
+
+const schema = mongoose.Schema;
+const candidateSchema = schema({
   userId: {
     type: String,
     required: true,
   },
   firstname: {
     type: String,
-    // required: [true, 'FirstName is required!'],
+    required: [true, 'FirstName is required!'],
     maxLength: [20, 'First Name cannot exceed 20 Characters'],
     minLength: [3, 'First Name should be greater then 3 characters'],
   },
   lastname: {
     type: String,
-    // // required: [true, 'LastName is required!'],
+    required: [true, 'LastName is required!'],
     maxLength: [20, 'Last Name cannot exceed 20 Characters'],
     minLength: [3, 'Last Name should be greater then 3 characters'],
   },
@@ -26,7 +28,7 @@ const candidateSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    // // required: [true, 'Email is required!'],
+    required: [true, 'Email is required!'],
     validate: [validator.isEmail, 'Please enter valid email'],
     unique: true,
   },
@@ -67,7 +69,7 @@ const candidateSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    // required: [true, 'Enter youor email'],
+    required: [true, 'Enter youor email'],
     validate: [validator.isEmail, 'please Enter valid email'],
   },
   skype: {
@@ -172,17 +174,19 @@ const candidateSchema = mongoose.Schema({
   remark: {
     type: String,
   },
-
-
-  created_date: {
-    type: Date,
-    default: Date.now,
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
   },
+  updatedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  }
 });
-candidateSchema.pre('save', async function() {
+candidateSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
-candidateSchema.methods.comparePassword = async function(password) {
+candidateSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 module.exports = mongoose.model('Candidate', candidateSchema);
