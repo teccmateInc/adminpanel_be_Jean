@@ -81,18 +81,16 @@ exports.updateSuperAdmin = async (req, res, next) => {
           updatedPassword = {
             password: await bcrypt.hash(req.body.password, 10),
           };
-        } else {
-          superadmin = await User.findByIdAndUpdate(
-              req.params.superAdminId,
-              {...req.body, ...updatedPassword},
-              {new: true, runValidators: true, useFindAndModify: false});
-
-          superadmin = await SuperAdmin.findOneAndUpdate({
-            userId: req.params.superAdminId,
-          },
-          {...req.body, ...updatedPassword, updatedBy: req.user},
-          {new: true, runValidators: true, useFindAndModify: false});
         }
+        superadmin = await User.findByIdAndUpdate(
+            req.params.superAdminId,
+            {...req.body, ...updatedPassword},
+            {new: true, runValidators: true, useFindAndModify: false});
+        superadmin = await SuperAdmin.findOneAndUpdate({
+          userId: req.params.superAdminId,
+        },
+        {...req.body, ...updatedPassword, updatedBy: req.user},
+        {new: true, runValidators: true, useFindAndModify: false});
       }
       res.status(200).json({
         success: true,

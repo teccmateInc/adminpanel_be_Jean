@@ -4,6 +4,8 @@ const {
   handleError,
   strictValidArrayWithMinLength,
   handleErrorWithStatus,
+  strictValidObjectWithKeys,
+  generateValidationsErrors,
 } = require('../helper/utils');
 const sendToken = require('../helper/jwtToken');
 
@@ -33,20 +35,21 @@ exports.UserLogin = async (req, res) => {
     }
     const user = await User.findOne({email}).select('+password');
     const {isMobile, browser} = req.useragent;
-    if ((!isMobile || isMobile) && browser && user.role === 'client') {
-      {
-        return handleErrorWithStatus(res, 404, 'Invalid request!');
-      }
-    }
     if (!user) {
       return handleErrorWithStatus(res, 401, 'Invalid email or password!');
     }
     const passwordMatched = await user.comparePassword(password);
     if (!passwordMatched) {
       return handleErrorWithStatus(res, 401, 'Invalid email or password!');
+    }
+    if ((!isMobile || isMobile) && browser && user.role === 'client') {
+      {
+        return handleErrorWithStatus(res, 404, 'Invalid request!');
+      }
     } else sendToken(user, 200, res);
   } catch (err) {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    console.log(err);
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(
           res,
           'Invalid email and password!',
@@ -75,7 +78,7 @@ exports.registerUser = async (req, res, next) => {
     });
     sendToken(user, 201, res);
   } catch (err) {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(
           res,
           'All fields are required!',
