@@ -36,13 +36,13 @@ const utils = {
       Object.prototype.toString.call(obj) !== '[object Array]';
   },
   strictValidObjectWithKeys: (obj) => {
-    return utils.strictValidObject &&
+    return utils.strictValidObject(obj) &&
       !!Object.keys(obj).length;
   },
   strictValidArray: (arr) => arr && Array.isArray(arr),
 
   strictValidArrayWithMinLength: (arr, minLength) =>
-    utils.strictValidArray && arr.length >= minLength,
+    utils.strictValidArray(arr) && arr.length >= minLength,
 };
 
 module.exports = utils;

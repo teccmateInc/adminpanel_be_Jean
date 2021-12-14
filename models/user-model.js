@@ -26,8 +26,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please Enter Your Password'],
-    minLength: [8, 'Password should be greater than 8 characters'],
+    // minlength: [8, 'Password should be greater than 8 characters'],
+    minlength: 8,
     select: false,
+    // validate: [validator.isStrongPassword, 'Please Enter a valid Password'],
   },
   role: {
     type: String,
@@ -57,6 +59,14 @@ userSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// return data without password
+userSchema.set('toJSON', {
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    delete ret.role;
+    return ret;
+  },
+});
 
 module.exports = mongoose.model('User', userSchema);
 module.exports.get = function(callback, limit) {

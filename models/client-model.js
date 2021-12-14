@@ -89,6 +89,15 @@ const clientSchema = schema({
 clientSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
+
+// return data without password
+clientSchema.set('toJSON', {
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    return ret;
+  },
+});
+
 clientSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };

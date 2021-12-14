@@ -6,7 +6,7 @@ const {
   strictValidArrayWithMinLength,
   generateValidationsErrors,
 } = require('../helper/utils');
-
+const bcrypt = require('bcryptjs');
 
 // get all admins
 exports.getAllAdmins = async (req, res, next) => {
@@ -94,14 +94,24 @@ exports.updateAdmin = async (req, res, next) => {
   let user = await User.findById(req.params.adminId);
   if (strictValidObjectWithKeys(user)) {
     if (strictValidObjectWithKeys(req.body)) {
-      user = await User.findByIdAndUpdate(req.params.adminId, req.body, {
-        new: true,
-        runValidators: false,
-        useFindAndModify: false,
-      });
+      let updatedPassword = {};
+      if (req.body.password) {
+        if (req.body.password.length < 8) {
+          return handleErrorWithStatus(res, 401, 'Invalid password!');
+        }
+        updatedPassword = {password: await bcrypt.hash(req.body.password, 10)};
+      }
+      user = await User.findByIdAndUpdate(
+          req.params.adminId,
+          {...req.body, ...updatedPassword},
+          {
+            new: true,
+            runValidators: false,
+            useFindAndModify: false,
+          });
       user = await Admin.findOneAndUpdate({
         userId: req.params.adminId,
-      }, {...req.body, updatedBy: req.user},
+      }, {...req.body, ...updatedPassword, updatedBy: req.user},
       {new: true, runValidators: false, useFindAndModify: false});
     }
     res.status(200).json({
@@ -110,7 +120,7 @@ exports.updateAdmin = async (req, res, next) => {
       data: user,
     });
   } else {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(res, 'Admin not found!', generateValidationsErrors(err));
     } else {
       handleErrorWithStatus(

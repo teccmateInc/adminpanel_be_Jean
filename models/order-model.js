@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
-const validator=require('validator');
 const schema=mongoose.Schema;
 const orderSchema=schema({
-  email: {
-    type: String,
-    required: [true, 'Enter your Email'],
-    validate: [validator.isEmail, 'please enter valid email'],
-    unique: true,
-  },
   vaccine: {
     type: Boolean,
     required: [true, 'Enter vaccination status'],

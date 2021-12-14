@@ -2,6 +2,7 @@ const {strictValidArrayWithMinLength,
   handleError,
   strictValidObjectWithKeys,
   generateValidationsErrors,
+  handleErrorWithStatus,
 } = require('../helper/utils');
 const Order = require('../models/order-model');
 
@@ -17,11 +18,11 @@ exports.getAllOrders = async (req, res, next) => {
     } else {
       res.status(400).json({
         success: false,
-        message: 'nothing in Orders',
+        message: 'No Data Found!',
       });
     }
   } catch (err) {
-    handleError(res, 'Orders not found');
+    handleError(res, 'Orders not found!');
   }
 };
 
@@ -32,47 +33,56 @@ exports.getOrder = async (req, res, next) => {
     if (strictValidObjectWithKeys(order)) {
       res.status(200).json({
         success: true,
-        order,
+        data: order,
       });
     } else {
       res.status(204).json({
         suucess: false,
-        message: 'No Content',
+        message: 'No Data Found!',
       });
     }
   } catch (err) {
-    handleError(res, 'Something went Wrong');
+    handleError(res, 'Something went Wrong. Try again later!');
   }
 };
 
 exports.createOrder = async (req, res, next) => {
   try {
-    const {email, vaccine, notes, position, statusLead, sentProfile} = req.body;
-    const order = await Order.create({
-      email,
-      vaccine,
-      notes,
-      position,
-      statusLead,
-      sentProfile,
-      user: req.user._id,
-    });
-    order.save((err) => {
-      if (err) {
-        status(400).json({
-          success: false,
-          message: 'Bad Request',
-        });
+    const {isMobile, browser} = req.useragent;
+    if ((!isMobile || isMobile) && browser && req.user.role === 'client') {
+      {
+        return handleErrorWithStatus(
+            res,
+            404,
+            'Invalid request!',
+            {...req.useragent});
       }
-    });
-    res.status(201).json({
-      success: true,
-      message: 'Order Created successfully',
-    });
+    } else {
+      const {vaccine, notes, position, statusLead, sentProfile} = req.body;
+      const order = await Order.create({
+        vaccine,
+        notes,
+        position,
+        statusLead,
+        sentProfile,
+        user: req.user,
+      });
+      order.save((err) => {
+        if (err) {
+          handleErrorWithStatus(
+              res,
+              400,
+              'Order Not created. Try again later!',
+          );
+        }
+      });
+      res.status(201).json({
+        success: true,
+        message: 'Order Created successfully',
+      });
+    }
   } catch (err) {
-    // console.log(err);
-    if (err && err.code === 11000) handleError(res, 'Email is already exists!');
-    else handleError(res, 'order not created', generateValidationsErrors(err));
+    handleError(res, 'Not created!', generateValidationsErrors(err));
   }
 };
 
@@ -85,24 +95,22 @@ exports.updateOrder = async (req, res, next) => {
           {new: true, runValidators: false, useFindAndModify: false});
       order.save((err) => {
         if (err) {
-          handleError(res, 'Bad Request');
+          handleError(res, 'Order not updated. Try again later!');
         }
       });
       res.status(200).json({
         success: true,
-        message: 'order Updated successfully',
-        order,
+        message: 'Order Updated successfully!',
+        data: order,
       });
     } else {
       res.status(204).json({
         suucess: false,
-        message: 'No Content',
+        message: 'No order found!',
       });
     }
   } catch (err) {
-    console.log(err);
-    if (err && err.code === 11000) handleError(res, 'Email is already exists!');
-    handleError(res, 'Something went Wrong');
+    handleError(res, 'Something went Wrong. Try again later!');
   }
 };
 
@@ -110,18 +118,15 @@ exports.deleteOrder = async (req, res, next) => {
   try {
     let order = await Order.findById(req.params.orderId);
     if (!order) {
-      res.status(400).json({
-        success: false,
-        message: 'Order not found',
-      });
+      handleErrorWithStatus(res, 404, 'Order not found!');
     } else {
       order = await Order.findByIdAndDelete(req.params.orderId);
       res.status(200).json({
         success: true,
-        message: 'Order deleted successfully',
+        message: 'Order deleted successfully!',
       });
     };
   } catch (err) {
-    handleError(res, 'Order not found');
+    handleError(res, 'Something went Wrong. Try again later!');
   }
 };

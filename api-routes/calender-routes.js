@@ -18,7 +18,8 @@ calendarRouter.route('/')
 calendarRouter.route('/:calendarId')
     .get(isAuthenticatedUser,
         authorizeRoles('admin', 'superadmin', 'candidate'),
-        getCalander)
+        getCalander,
+    )
     .put(isAuthenticatedUser, allowedRoles, updateCalander)
     .delete(isAuthenticatedUser, allowedRoles, deleteCalender);
 module.exports = calendarRouter;

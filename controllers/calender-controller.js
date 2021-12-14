@@ -18,12 +18,11 @@ exports.getAllCalanders = async (req, res, next) => {
     } else {
       res.status(400).json({
         success: false,
-        message: 'nothing in Calendar',
+        message: 'No data found!',
       });
     }
   } catch (err) {
-    console.log(err);
-    handleError(res, 'Calendars not found');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };
 exports.getCalander = async (req, res, next) => {
@@ -32,11 +31,11 @@ exports.getCalander = async (req, res, next) => {
   if (strictValidObjectWithKeys(calendar)) {
     res.status(200).json({
       success: true,
-      message: 'Calendar found!',
+      message: 'Successful!',
       calendar,
     });
   } else {
-    handleError(res, 'Calander not found');
+    handleError(res, 'Not data found!');
   }
 };
 
@@ -45,11 +44,11 @@ exports.createCalander = async (req, res, next) => {
   try {
     const {date, to, from} = req.body;
     const calander = await Calendar.create({
-      date, to, from, user: req.user._id,
+      date, to, from, user: req.user,
     });
     calander.save((err) => {
       if (err) {
-        handleError(res, 'Not Created');
+        handleError(res, 'Not Created. Try again later!');
       } else {
         res.status(201).json({
           success: true,
@@ -60,13 +59,10 @@ exports.createCalander = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    if (err && err.code === 11000) handleError(res, 'Email is already exists!');
-    else {
-      handleError(res,
-          'Calendar not created',
-          generateValidationsErrors(err),
-      );
-    }
+    handleError(res,
+        'Something wents wrong. Try again later!',
+        generateValidationsErrors(err),
+    );
   }
 };
 exports.updateCalander = async (req, res, next) => {
@@ -77,18 +73,18 @@ exports.updateCalander = async (req, res, next) => {
           req.body, {new: true, runValidators: false});
       res.status(200).json({
         success: true,
-        message: 'Calander Updated',
+        message: 'Updated successfully!',
         data: calander,
       });
     } else {
       res.status(401).json({
         success: false,
-        message: 'Calander not found',
+        message: 'No data found!',
       });
     }
   } catch (error) {
     console.log(error);
-    handleError(res, 'Calender not found');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };
 exports.deleteCalender = async (req, res, next) => {
@@ -98,15 +94,15 @@ exports.deleteCalender = async (req, res, next) => {
       calander = await Calendar.findByIdAndDelete(req.params.calendarId);
       res.status(200).json({
         success: true,
-        message: 'Calander Deleted',
+        message: 'Deleted successfully!',
       });
     } else {
       res.status(401).json({
         success: false,
-        message: 'Calander not found',
+        message: 'Not data found!',
       });
     }
   } catch (error) {
-    handleError(res, 'Calander not found');
+    handleError(res, 'Something wents wrong. Try again later!');
   }
 };

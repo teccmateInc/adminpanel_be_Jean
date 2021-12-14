@@ -1,6 +1,10 @@
 // Import User Model
 const User = require('../models/user-model');
-const {handleError, strictValidArrayWithMinLength} = require('../helper/utils');
+const {
+  handleError,
+  strictValidArrayWithMinLength,
+  handleErrorWithStatus,
+} = require('../helper/utils');
 const sendToken = require('../helper/jwtToken');
 
 // Handle get Users actions
@@ -13,10 +17,7 @@ exports.getUsers = async (_, res) => {
         data: users,
       });
     } else {
-      res.status(404).json({
-        success: false,
-        message: 'User not found!',
-      });
+      handleErrorWithStatus(res, 404, 'User not found!');
     }
   } catch (err) {
     handleError(res, 'Something wents wrong. Try again later!');
@@ -28,19 +29,21 @@ exports.UserLogin = async (req, res) => {
   try {
     const {email, password} = req.body;
     if (!email || !password) {
-      return res.status(400).json({message: 'Email and password required!'});
+      return handleErrorWithStatus(res, 400, 'Email and password required!');
     }
     const user = await User.findOne({email}).select('+password');
+    const {isMobile, browser} = req.useragent;
+    if ((!isMobile || isMobile) && browser && user.role === 'client') {
+      {
+        return handleErrorWithStatus(res, 404, 'Invalid request!');
+      }
+    }
     if (!user) {
-      return res.status(401).json({
-        success: false, message: 'Invalid email or password!',
-      });
+      return handleErrorWithStatus(res, 401, 'Invalid email or password!');
     }
     const passwordMatched = await user.comparePassword(password);
     if (!passwordMatched) {
-      return res.status(401).json({
-        success: false, message: 'Invalid email or password!',
-      });
+      return handleErrorWithStatus(res, 401, 'Invalid email or password!');
     } else sendToken(user, 200, res);
   } catch (err) {
     if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {

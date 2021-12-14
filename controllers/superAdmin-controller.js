@@ -1,11 +1,14 @@
 const SuperAdmin = require('../models/superAdministrator-model');
 const User = require('../models/user-model');
+const bcrypt = require('bcryptjs');
 
-const {handleError,
+const {
+  handleError,
   strictValidObjectWithKeys,
   strictValidArrayWithMinLength,
   generateValidationsErrors,
-  handleErrorWithStatus} = require('../helper/utils');
+  handleErrorWithStatus,
+} = require('../helper/utils');
 
 
 exports.getSuperAdmin = async (req, res, next) => {
@@ -70,16 +73,26 @@ exports.updateSuperAdmin = async (req, res, next) => {
     let superadmin = await User.findById(req.params.superAdminId);
     if (strictValidObjectWithKeys(superadmin)) {
       if (strictValidObjectWithKeys(req.body)) {
-        superadmin = await User.findByIdAndUpdate(
-            req.params.superAdminId,
-            req.body,
-            {new: true, runValidators: false, useFindAndModify: false});
+        let updatedPassword = {};
+        if (req.body.password) {
+          if (req.body.password.length < 8) {
+            return handleErrorWithStatus(res, 401, 'Invalid password!');
+          }
+          updatedPassword = {
+            password: await bcrypt.hash(req.body.password, 10),
+          };
+        } else {
+          superadmin = await User.findByIdAndUpdate(
+              req.params.superAdminId,
+              {...req.body, ...updatedPassword},
+              {new: true, runValidators: true, useFindAndModify: false});
 
-        superadmin = await SuperAdmin.findOneAndUpdate({
-          userId: req.params.superAdminId,
-        },
-        {...req.body, updatedBy: req.user},
-        {new: true, runValidators: false, useFindAndModify: false});
+          superadmin = await SuperAdmin.findOneAndUpdate({
+            userId: req.params.superAdminId,
+          },
+          {...req.body, ...updatedPassword, updatedBy: req.user},
+          {new: true, runValidators: true, useFindAndModify: false});
+        }
       }
       res.status(200).json({
         success: true,
@@ -87,13 +100,11 @@ exports.updateSuperAdmin = async (req, res, next) => {
         data: superadmin,
       });
     } else {
-      res.status(401).json({
-        success: false,
-        message: 'Super Admin not updated',
-      });
+      return handleErrorWithStatus(res, 401, 'Super Admin not updated');
     }
   } catch (err) {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    console.log(err);
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(
           res,
           'Super admin not found!',

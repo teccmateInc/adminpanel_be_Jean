@@ -13,10 +13,11 @@ const OrderRouter = router();
 const allowedRoles = authorizeRoles('admin', 'superadmin');
 
 OrderRouter.route('/')
-    .get(getAllOrders, allowedRoles)
+    .get(isAuthenticatedUser, allowedRoles, getAllOrders)
     .post(isAuthenticatedUser,
-        authorizeRoles('client', 'superadmin'),
-        createOrder);
+        authorizeRoles('client'),
+        createOrder,
+    );
 
 OrderRouter.route('/:orderId')
     .get(isAuthenticatedUser, allowedRoles, getOrder)

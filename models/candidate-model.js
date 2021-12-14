@@ -186,6 +186,15 @@ const candidateSchema = schema({
 candidateSchema.pre('save', async function() {
   this.password = await bcrypt.hash(this.password, 10);
 });
+
+// return data without password
+candidateSchema.set('toJSON', {
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    return ret;
+  },
+});
+
 candidateSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };

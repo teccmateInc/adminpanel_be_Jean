@@ -1,6 +1,6 @@
-const express=require('express');
+const express = require('express');
 const {getAllAdmins, createNewAdmin, getAdmin, updateAdmin, deleteAdmin} =
-require('../controllers/admin-controller');
+    require('../controllers/admin-controller');
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
 const router = express.Router;
 const adminRouter = router();
@@ -17,4 +17,4 @@ adminRouter.route('/:adminId')
     .put(isAuthenticatedUser, allowedAccess, updateAdmin)
     .delete(isAuthenticatedUser, allowedAccess, deleteAdmin);
 
-module.exports=adminRouter;
+module.exports = adminRouter;

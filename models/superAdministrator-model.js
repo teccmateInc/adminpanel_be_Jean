@@ -1,9 +1,9 @@
-const mongoose=require('mongoose');
-const validator=require('validator');
-const bcrypt=require('bcryptjs');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-const schema=mongoose.Schema;
-const superAdminSchema=schema({
+const schema = mongoose.Schema;
+const superAdminSchema = schema({
   userId: {
     type: String,
     required: true,
@@ -29,8 +29,9 @@ const superAdminSchema=schema({
   password: {
     type: String,
     required: [true, 'Please Enter Your Password'],
-    minLength: [8, 'Password should be greater than 8 characters'],
+    minlength: 8,
     select: false,
+    // validate: [validator.isStrongPassword, 'Please Enter a valid Password'],
   },
   createdBy: {
     type: mongoose.Schema.ObjectId,
@@ -42,10 +43,19 @@ const superAdminSchema=schema({
   },
 });
 superAdminSchema.pre('save', async function() {
-  this.password=await bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
 });
-superAdminSchema.methods.comparePassword=async function(password) {
+
+// return data without password
+superAdminSchema.set('toJSON', {
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    return ret;
+  },
+});
+
+superAdminSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
-module.exports=mongoose.model('superAdmins', superAdminSchema);
+module.exports = mongoose.model('superAdmins', superAdminSchema);

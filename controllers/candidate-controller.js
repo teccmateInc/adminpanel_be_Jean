@@ -6,6 +6,7 @@ const {
   strictValidArrayWithMinLength,
   generateValidationsErrors,
 } = require('../helper/utils');
+const bcrypt = require('bcryptjs');
 
 // create new candidate
 exports.createNewCandidate = async (req, res, next) => {
@@ -94,14 +95,26 @@ exports.updateCandidate = async (req, res, next) => {
     let candidate = await User.findById(req.params.userId);
     if (strictValidObjectWithKeys(candidate)) {
       if (strictValidObjectWithKeys(req.body)) {
-        candidate = await User.findByIdAndUpdate(req.params.userId, req.body, {
-          new: true,
-          runValidators: false,
-          useFindAndModify: false,
-        });
+        let updatedPassword = {};
+        if (req.body.password) {
+          if (req.body.password.length < 8) {
+            return handleErrorWithStatus(res, 401, 'Invalid password!');
+          }
+          updatedPassword = {
+            password: await bcrypt.hash(req.body.password, 10),
+          };
+        }
+        candidate = await User.findByIdAndUpdate(
+            req.params.userId,
+            {...req.body, ...updatedPassword},
+            {
+              new: true,
+              runValidators: false,
+              useFindAndModify: false,
+            });
         candidate = await Candidate.findOneAndUpdate({
           userId: req.params.userId,
-        }, {...req.body, updatedBy: req.user},
+        }, {...req.body, ...updatedPassword, updatedBy: req.user},
         {
           new: true,
           runValidators: false,
@@ -120,7 +133,7 @@ exports.updateCandidate = async (req, res, next) => {
       });
     }
   } catch (err) {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(res, 'Candidate not found!', generateValidationsErrors(err));
     } else handleError(res, 'Something wents wrong. Try again later!');
   }

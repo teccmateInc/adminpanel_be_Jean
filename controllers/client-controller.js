@@ -6,6 +6,7 @@ const {
   strictValidArrayWithMinLength,
   generateValidationsErrors,
 } = require('../helper/utils');
+const bcrypt = require('bcryptjs');
 
 // create new clients
 exports.createNewClient = async (req, res, next) => {
@@ -96,15 +97,27 @@ exports.updateClient = async (req, res, next) => {
     let client = await User.findById(clientId);
     if (strictValidObjectWithKeys(client)) {
       if (strictValidObjectWithKeys(req.body)) {
-        client = await User.findByIdAndUpdate(clientId, req.body, {
-          new: true,
-          runValidators: true,
-          useFindAndModify: false,
-        });
+        let updatedPassword = {};
+        if (req.body.password) {
+          if (req.body.password.length < 8) {
+            return handleErrorWithStatus(res, 401, 'Invalid password!');
+          }
+          updatedPassword = {
+            password: await bcrypt.hash(req.body.password, 10),
+          };
+        }
+        client = await User.findByIdAndUpdate(
+            clientId,
+            {...req.body, ...updatedPassword},
+            {
+              new: true,
+              runValidators: true,
+              useFindAndModify: false,
+            });
         client = await Client.findOneAndUpdate({
           userId: clientId,
         },
-        {...req.body, updatedBy: req.user}, {
+        {...req.body, ...updatedPassword, updatedBy: req.user}, {
           new: true,
           runValidators: false,
           useFindAndModify: false,
@@ -122,9 +135,10 @@ exports.updateClient = async (req, res, next) => {
       });
     }
   } catch (err) {
-    if (strictValidArrayWithMinLength(generateValidationsErrors(err), 1)) {
+    if (strictValidObjectWithKeys(generateValidationsErrors(err))) {
       handleError(res, 'Client not found!', generateValidationsErrors(err));
     } else handleError(res, 'Something wents wrong. Try again later!');
+    console.log(err);
   }
 };
 
