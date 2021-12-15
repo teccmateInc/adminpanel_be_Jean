@@ -16,9 +16,10 @@ exports.getAllOrders = async (req, res, next) => {
         data: orders,
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: 'No Data Found!',
+        data:orders
       });
     }
   } catch (err) {
@@ -36,9 +37,10 @@ exports.getOrder = async (req, res, next) => {
         data: order,
       });
     } else {
-      res.status(204).json({
+      res.status(200).json({
         suucess: false,
         message: 'No Data Found!',
+        data:order
       });
     }
   } catch (err) {
@@ -78,7 +80,7 @@ exports.createOrder = async (req, res, next) => {
       });
       res.status(201).json({
         success: true,
-        message: 'Order Created successfully',
+        message: 'Order Created successfully!',
       });
     }
   } catch (err) {
@@ -104,7 +106,7 @@ exports.updateOrder = async (req, res, next) => {
         data: order,
       });
     } else {
-      res.status(204).json({
+      res.status(200).json({
         suucess: false,
         message: 'No order found!',
       });
@@ -118,7 +120,7 @@ exports.deleteOrder = async (req, res, next) => {
   try {
     let order = await Order.findById(req.params.orderId);
     if (!order) {
-      handleErrorWithStatus(res, 404, 'Order not found!');
+      handleErrorWithStatus(res, 200, 'Order not found!');
     } else {
       order = await Order.findByIdAndDelete(req.params.orderId);
       res.status(200).json({

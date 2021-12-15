@@ -53,12 +53,13 @@ exports.getAllCandidates = async (req, res, next) => {
     if (strictValidArrayWithMinLength(users, 1)) {
       res.status(200).json({
         success: true,
-        users,
+        data: users,
       });
     } else {
-      res.status(401).json({
+      res.status(200).json({
         success: false,
         message: 'Candidates Not found!',
+        data: users,
       });
     }
   } catch (err) {
@@ -76,12 +77,13 @@ exports.getCandidate = async (req, res, next) => {
       res.status(200).json({
         success: true,
         message: 'Candidate found successfully!',
-        candidate,
+        data: candidate,
       });
     } else {
       res.status(200).json({
         success: false,
         message: 'Candidate not found!',
+        data: candidate, 
       });
     }
   } catch (err) {
@@ -130,6 +132,7 @@ exports.updateCandidate = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Candidate not found!',
+        data:candidate
       });
     }
   } catch (err) {
@@ -154,7 +157,7 @@ exports.deleteCandidate = async (req, res, next) => {
         message: 'Candidate deleted successfully!',
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: 'Candidate not found!',
       });

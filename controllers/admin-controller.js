@@ -20,7 +20,7 @@ exports.getAllAdmins = async (req, res, next) => {
         data: admins,
       });
     } else {
-      res.status(400).json({success: false, message: 'no Admin found'});
+      res.status(200).json({success: false, message: 'no Admin found',data:admins});
     }
   } catch (err) {
     handleError(res, 'invalid admin');
@@ -40,9 +40,10 @@ exports.getAdmin = async (req, res, next) => {
         data: admin,
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: 'Admin not found',
+        data:admin
       });
     }
   } catch (err) {
@@ -97,7 +98,7 @@ exports.updateAdmin = async (req, res, next) => {
       let updatedPassword = {};
       if (req.body.password) {
         if (req.body.password.length < 8) {
-          return handleErrorWithStatus(res, 401, 'Invalid password!');
+          return handleErrorWithStatus(res, 200, 'Invalid password!');
         }
         updatedPassword = {password: await bcrypt.hash(req.body.password, 10)};
       }

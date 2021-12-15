@@ -13,12 +13,13 @@ exports.getAllCalanders = async (req, res, next) => {
     if (strictValidArrayWithMinLength(calendars, 1)) {
       res.status(200).json({
         success: true,
-        calendars,
+        data:calendars,
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: 'No data found!',
+        data:calendars
       });
     }
   } catch (err) {
@@ -32,7 +33,7 @@ exports.getCalander = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Successful!',
-      calendar,
+      data:calendar,
     });
   } else {
     handleError(res, 'Not data found!');
@@ -58,7 +59,6 @@ exports.createCalander = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.log(err);
     handleError(res,
         'Something wents wrong. Try again later!',
         generateValidationsErrors(err),
@@ -77,7 +77,7 @@ exports.updateCalander = async (req, res, next) => {
         data: calander,
       });
     } else {
-      res.status(401).json({
+      res.status(200).json({
         success: false,
         message: 'No data found!',
       });
@@ -97,7 +97,7 @@ exports.deleteCalender = async (req, res, next) => {
         message: 'Deleted successfully!',
       });
     } else {
-      res.status(401).json({
+      res.status(200).json({
         success: false,
         message: 'Not data found!',
       });

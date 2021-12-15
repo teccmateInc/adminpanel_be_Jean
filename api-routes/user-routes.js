@@ -15,9 +15,6 @@ user.route('/')
 // POST: req for login
 user.route('/login').post(userController.UserLogin);
 
-// POST: req for register OR create new user
-user.route('/register').post(userController.registerUser);
-
 // GET: req for logout user
 user.route('/logout').get(userController.logoutUser);
 

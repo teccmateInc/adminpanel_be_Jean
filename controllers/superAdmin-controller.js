@@ -19,14 +19,14 @@ exports.getSuperAdmin = async (req, res, next) => {
     if (strictValidArrayWithMinLength(user, 1)) {
       res.status(200).json({
         success: true,
-        message: 'superAdmin found successfully',
+        message: 'superAdmin found successfully!',
         data: user,
       });
     } else {
-      res.status(400).json({success: false, message: 'no SuperAdmin found'});
+      res.status(200).json({success: false, message: 'No SuperAdmin found!',data:user});
     }
   } catch (err) {
-    handleError(res, 'SuperAmin not found');
+    handleError(res, 'SuperAmin not found!');
   }
 };
 
@@ -39,7 +39,7 @@ exports.createSuperAdmin = async (req, res, next) => {
       firstname, lastname, email, password, role,
     });
     Superadmin.save(async (err) => {
-      if (err) handleError(res, 'SuperAdmin not created');
+      if (err) handleError(res, 'SuperAdmin not created!');
       else {
         const superAdmin = await SuperAdmin.create({
           ...req.body, userId: Superadmin.id,
@@ -47,11 +47,11 @@ exports.createSuperAdmin = async (req, res, next) => {
         });
         superAdmin.save((err) => {
           if (err) {
-            handleError(res, 'SuperAdmin not created');
+            handleError(res, 'SuperAdmin not created!');
           } else {
             res.status(201).json({
               success: true,
-              message: 'SuperAdmin created successfully',
+              message: 'SuperAdmin created successfully!',
               data: superAdmin,
             });
           }
@@ -61,7 +61,7 @@ exports.createSuperAdmin = async (req, res, next) => {
   } catch (err) {
     if (err && err.code === 11000) handleError(res, 'Email is already exists!');
     else {
-      handleError(res, 'SuperAdmin not created',
+      handleError(res, 'SuperAdmin not created!',
           generateValidationsErrors(err));
     }
   }
@@ -76,7 +76,7 @@ exports.updateSuperAdmin = async (req, res, next) => {
         let updatedPassword = {};
         if (req.body.password) {
           if (req.body.password.length < 8) {
-            return handleErrorWithStatus(res, 401, 'Invalid password!');
+            return handleErrorWithStatus(res, 200, 'Invalid password!');
           }
           updatedPassword = {
             password: await bcrypt.hash(req.body.password, 10),
@@ -94,11 +94,11 @@ exports.updateSuperAdmin = async (req, res, next) => {
       }
       res.status(200).json({
         success: true,
-        message: 'SuperAdmin updated successfully',
+        message: 'SuperAdmin updated successfully!',
         data: superadmin,
       });
     } else {
-      return handleErrorWithStatus(res, 401, 'Super Admin not updated');
+      return handleErrorWithStatus(res, 200, 'Super Admin not updated!');
     }
   } catch (err) {
     console.log(err);
@@ -124,9 +124,9 @@ exports.deleteSuperAdmin = async (req, res, next) => {
   try {
     let user = await User.findById(req.params.superAdminId);
     if (!user) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
-        message: 'User not found',
+        message: 'User not found!',
       });
     }
     user = await User.findByIdAndDelete(req.params.superAdminId);
@@ -135,10 +135,10 @@ exports.deleteSuperAdmin = async (req, res, next) => {
     });
     res.status(200).json({
       success: true,
-      message: 'SuperAdmin deleted successfully',
+      message: 'SuperAdmin deleted successfully!',
     });
   } catch (err) {
-    handleError(res, 'something went wrong');
+    handleError(res, 'something went wrong!');
   }
 };
 

@@ -56,9 +56,10 @@ exports.getAllClients = async (req, res, next) => {
         data: clients,
       });
     } else {
-      res.status(401).json({
+      res.status(200).json({
         success: false,
         message: 'Clients not found!',
+        data:clients
       });
     }
   } catch (err) {
@@ -82,6 +83,7 @@ exports.getClient = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Client not found!',
+        data:client
       });
     }
   } catch (err) {
@@ -100,7 +102,7 @@ exports.updateClient = async (req, res, next) => {
         let updatedPassword = {};
         if (req.body.password) {
           if (req.body.password.length < 8) {
-            return handleErrorWithStatus(res, 401, 'Invalid password!');
+            return handleErrorWithStatus(res, 200, 'Invalid password!');
           }
           updatedPassword = {
             password: await bcrypt.hash(req.body.password, 10),
@@ -155,7 +157,7 @@ exports.deleteClient = async (req, res, next) => {
         message: 'Client deleted successfully!',
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: 'Client not found!',
       });
