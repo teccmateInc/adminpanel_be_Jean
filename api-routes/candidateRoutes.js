@@ -6,6 +6,7 @@ const {
   getCandidate,
   updateCandidate,
   deleteCandidate,
+  getCandidateDetails
 } = require('../controllers/candidate-controller');
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
 const candidateRouter = router();
@@ -14,10 +15,11 @@ const allowedRoles = authorizeRoles('admin', 'superadmin');
 candidateRouter.route('/')
     .get(isAuthenticatedUser, allowedRoles, getAllCandidates)
     .post(isAuthenticatedUser, allowedRoles, createNewCandidate);
-
+    candidateRouter.route('/me')
+    .get(isAuthenticatedUser,getCandidateDetails);
 
 candidateRouter.route('/:candidateId')
-    .get(isAuthenticatedUser,authorizeRoles("admin","superadmin","candidate") ,getCandidate);
+    .get(isAuthenticatedUser,allowedRoles,getCandidate);
 
 candidateRouter.route('/:userId')
     .put(isAuthenticatedUser, allowedRoles, updateCandidate)

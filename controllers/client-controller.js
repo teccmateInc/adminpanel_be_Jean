@@ -92,6 +92,29 @@ exports.getClient = async (req, res, next) => {
   }
 };
 
+//get login client
+exports.getClientDetails=async(req,res,next)=>{
+  try {
+    const client =await Client.findById({userId:req.user.id})
+    if(strictValidArrayWithMinLength(client,1)){
+      res.status(200).json({
+        success:true,
+        message:"Client found successfully",
+        data:client
+      })
+    }
+    else{
+      res.status(200).json({
+        success:false,
+        message:'Client not found!',
+        data:client
+      })
+    }
+  } catch (err) {
+    handleError(res,'Something wents wrong. Try again later! ')
+  }
+}
+
 // update client
 exports.updateClient = async (req, res, next) => {
   try {

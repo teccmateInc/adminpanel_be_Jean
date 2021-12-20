@@ -51,6 +51,30 @@ exports.getAdmin = async (req, res, next) => {
   }
 };
 
+//get candidate details
+exports.getAdminDetails = async (req, res, next) => {
+  try {
+    const admin = await Admin.find({userId:req.user.id})
+    if (strictValidArrayWithMinLength(admin,1)) {
+      res.status(200).json({
+        success: true,
+        message: "Admin found successfully",
+        data: admin
+      })
+    }
+    else {
+      res.status(200).json({
+        success: false,
+        message: 'Admin not found!',
+        data: admin
+      })
+    }
+  } catch (err) {
+  
+    handleError(res, 'Something wents wrong. Try again later! ')
+  }
+}
+
 
 // create admin
 exports.createNewAdmin = async (req, res, next) => {

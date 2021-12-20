@@ -13,6 +13,7 @@ SuperAdminRouter.route('/')
     .get(isAuthenticatedUser, authorizeRoles('superadmin'), getSuperAdmin)
     .post(isAuthenticatedUser, authorizeRoles('superadmin'), createSuperAdmin);
 
+
 SuperAdminRouter.route('/:superAdminId')
     .put(isAuthenticatedUser, authorizeRoles('superadmin'), updateSuperAdmin)
     .delete(isAuthenticatedUser,

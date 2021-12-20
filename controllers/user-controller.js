@@ -46,7 +46,8 @@ exports.UserLogin = async (req, res) => {
       {
         return handleErrorWithStatus(res, 200, 'Invalid request!');
       }
-    } else sendToken(user, 200, res);
+    } else 
+    sendToken(user, 200, res);
   } catch (err) {
     console.log(err);
     if (strictValidObjectWithKeys(generateValidationsErrors(err))) {

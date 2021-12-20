@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAllAdmins, createNewAdmin, getAdmin, updateAdmin, deleteAdmin} =
+const {getAllAdmins, createNewAdmin, getAdmin, updateAdmin, deleteAdmin, getAdminDetails} =
     require('../controllers/admin-controller');
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
 const router = express.Router;
@@ -11,6 +11,7 @@ const allowedAccess = authorizeRoles('superadmin');
 adminRouter.route('/')
     .get(isAuthenticatedUser, allowedAccess, getAllAdmins)
     .post(isAuthenticatedUser, allowedAccess, createNewAdmin);
+    
 
 adminRouter.route('/:adminId')
     .get(isAuthenticatedUser, allowedAccess, getAdmin)
