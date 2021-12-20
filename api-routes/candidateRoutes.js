@@ -17,7 +17,7 @@ candidateRouter.route('/')
 
 
 candidateRouter.route('/:candidateId')
-    .get(isAuthenticatedUser, getCandidate);
+    .get(isAuthenticatedUser,authorizeRoles("admin","superadmin","candidate") ,getCandidate);
 
 candidateRouter.route('/:userId')
     .put(isAuthenticatedUser, allowedRoles, updateCandidate)

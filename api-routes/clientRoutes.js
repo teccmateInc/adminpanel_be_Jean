@@ -17,7 +17,7 @@ clientRouter.route('/')
     .post(isAuthenticatedUser, allowedRoles, createNewClient);
 
 clientRouter.route('/:clientId')
-    .get(isAuthenticatedUser, getClient)
+    .get(isAuthenticatedUser,authorizeRoles('admin', 'superadmin',"client") ,getClient)
     .put(isAuthenticatedUser, allowedRoles, updateClient)
     .delete(isAuthenticatedUser, allowedRoles, deleteClient);
 
