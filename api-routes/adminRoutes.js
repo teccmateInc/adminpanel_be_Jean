@@ -11,11 +11,14 @@ const allowedAccess = authorizeRoles('superadmin');
 adminRouter.route('/')
     .get(isAuthenticatedUser, allowedAccess, getAllAdmins)
     .post(isAuthenticatedUser, allowedAccess, createNewAdmin);
-    
 
 adminRouter.route('/:adminId')
     .get(isAuthenticatedUser, allowedAccess, getAdmin)
     .put(isAuthenticatedUser, allowedAccess, updateAdmin)
     .delete(isAuthenticatedUser, allowedAccess, deleteAdmin);
+
+//updated
+adminRouter.route('/me')
+    .get(isAuthenticatedUser,authorizeRoles('admin'), getAdminDetails);
 
 module.exports = adminRouter;

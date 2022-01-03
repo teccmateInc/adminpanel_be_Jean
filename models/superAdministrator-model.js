@@ -11,14 +11,14 @@ const superAdminSchema = schema({
   firstname: {
     type: String,
     required: [true, 'First name is required!'],
-    maxLength: [11, 'Phone number cannot exceed 11 Characters'],
-    minLength: [3, 'Phone number should be greater then 3 characters'],
+    maxLength: [30, 'Name cannot exceed 30 characters'],
+    minLength: [4, 'Name should have more than 4 characters'],
   },
   lastname: {
     type: String,
     required: [true, 'Last Name is required!'],
-    maxLength: [11, 'Phone number cannot exceed 11 Characters'],
-    minLength: [3, 'Phone number should be greater then 3 characters'],
+    maxLength: [30, 'Name cannot exceed 30 characters'],
+    minLength: [4, 'Name should have more than 4 characters'],
   },
   email: {
     type: String,

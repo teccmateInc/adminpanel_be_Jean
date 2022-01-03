@@ -1,0 +1,1559 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "adminpanel",
+    "description": "Service for admin panel & mobile AP now",
+    "version": "1.0"
+  },
+  "produces": ["application/json"],
+  "paths": {
+    "/api/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs user into the system",
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "root@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "root1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error server",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/logout": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs out current logged in user session",
+        "operationId": "logoutUser",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Something wents wrong. Try again later!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/superadmin": {
+      "get": {
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "List all superadmin",
+        "operationId": "getSuperadmins",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/superadmin"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "superAdmin found successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get SuperAdmin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "Create superadmin",
+        "operationId": "postSuperadmin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "firstname": {
+                    "type": "string",
+                    "example": "admin"
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "example": "admin"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "superadmin@root.com"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/superadmin"
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "SuperAdmin created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "SuperAdmin not created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/superadmin/{userId}": {
+      "put": {
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "Update superadmin",
+        "operationId": "putSuperadmin",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user that needs to be updated. Update automatically superadmin too.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/superadmin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/superadmin"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "superAdmin found successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get SuperAdmin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "Delete superadmin",
+        "operationId": "deleteSuperadmin",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user that needs to be deleted. Delete automatically superadmin too.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SuperAdmin deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List all admin",
+        "operationId": "getadmins",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/admin"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "Admin found successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get Admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create admin",
+        "operationId": "postadmin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "firstname": {
+                    "type": "string",
+                    "example": "admin"
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "example": "admin"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "admin@root.com"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/admin"
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "Admin created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "SuperAdmin not created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/{userId}": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update admin",
+        "operationId": "putadmin",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user that needs to be updated. Update automatically admin too.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/admin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/admin"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "superAdmin updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get Admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Delete admin",
+        "operationId": "deleteadmin",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user that needs to be deleted. Delete automatically admin too.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Admin deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/file": {
+      "get": {
+        "tags": [
+          "file"
+        ],
+        "summary": "List all files",
+        "operationId": "getfiles",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/file"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "Files found successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "file"
+        ],
+        "summary": "Create file",
+        "operationId": "postfile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "example": "61b85603a77df173ac4df406"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/file"
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "File created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "File not created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/file/{fileId}": {
+      "delete": {
+        "tags": [
+          "file"
+        ],
+        "summary": "file delete",
+        "operationId": "filedelete",
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "ID of the file that needs to be deleted.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "file deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/field": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "List all fields",
+        "operationId": "getfields",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/field"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "Fields found successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Create field",
+        "operationId": "postfield",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/field"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/field"
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "Field created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Field not created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/field/{fieldId}": {
+      "put": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Update field",
+        "operationId": "putfield",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "ID of the field that needs to be updated.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated field object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/field"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/field"
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "field updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error get field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "field"
+        ],
+        "summary": "field delete",
+        "operationId": "filedelete",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "ID of the field that needs to be deleted.",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "field deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You are not logged in!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+      "schemas": {
+        "superadmin": {
+          "required": [
+            "userId",
+            "firstname",
+            "lastname",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "Ref user"
+            },
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedBy": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "superadmin"
+          }
+        },
+        "admin": {
+          "required": [
+            "userId",
+            "firstname",
+            "lastname",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "Ref user"
+            },
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedBy": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "superadmin"
+          }
+        },
+        "client": {
+          "required": [
+            "userId",
+            "firstname",
+            "lastname",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "Ref user"
+            },
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "zip_code": {
+              "type": "integer"
+            },
+            "city": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "admin_contact": {
+              "type": "string"
+            },
+            "summary_demand": {
+              "type": "string"
+            },
+            "title_demand": {
+              "type": "string"
+            },
+            "send_files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "vaccine": {
+              "type": "boolean"
+            },
+            "language": {
+              "type": "array",
+              "xml": {
+                "name": "lang",
+                "wrapped": true
+              },
+              "items": {
+                "type": "string"
+              }
+            },
+            "pa": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedBy": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "superadmin"
+          }
+        },
+        "user": {
+          "required": [
+            "firstname",
+            "lastname",
+            "email",
+            "role"
+          ],
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "role": {
+              "type": "string",
+              "default": "client"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "user"
+          }
+        },
+        "file": {
+          "required": [
+            "userId",
+            "originalname",
+            "size",
+            "destination",
+            "filename"
+          ],
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "originalname": {
+              "type": "string"
+            },
+            "encoding": {
+              "type": "string"
+            },
+            "mimetype": {
+              "type": "string"
+            },
+            "size": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "destination": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "file"
+          }
+        },
+        "field": {
+          "required": [
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "arrayString": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "arrayNumber": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "xml": {
+            "name": "field"
+          }
+        },
+        "errorResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "default": false
+            },
+            "status": {
+              "type": "string",
+              "default": "error"
+            },
+            "message": {
+              "type": "string",
+              "default": "Not Found!"
+            }
+          },
+          "xml": {
+            "name": "errorResponse"
+          }
+        },
+        "apiResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "default": true
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "xml": {
+            "name": "errorResponse"
+          }
+        }
+      }
+    }
+ }

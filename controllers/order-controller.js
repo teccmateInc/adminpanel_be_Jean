@@ -19,7 +19,7 @@ exports.getAllOrders = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'No Data Found!',
-        data:orders
+        data: orders,
       });
     }
   } catch (err) {
@@ -40,7 +40,7 @@ exports.getOrder = async (req, res, next) => {
       res.status(200).json({
         suucess: false,
         message: 'No Data Found!',
-        data:order
+        data: order,
       });
     }
   } catch (err) {

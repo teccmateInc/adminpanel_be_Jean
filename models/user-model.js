@@ -52,9 +52,7 @@ userSchema.methods.getJWTToken = function() {
   });
 };
 
-
 // Compare Password
-
 userSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
@@ -62,9 +60,10 @@ userSchema.methods.comparePassword = async function(password) {
 // return data without password
 userSchema.set('toJSON', {
   transform: function(doc, ret, options) {
+    let type = ret.role
     delete ret.password;
     delete ret.role;
-    return ret;
+    return {...ret, type};
   },
 });
 

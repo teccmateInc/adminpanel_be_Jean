@@ -6,19 +6,34 @@
 // Select the database to use.
 use('adminpanel');
 
-db.createUser(
-   {
-     user: "adminpanel_user",
-     pwd: "example",
-     roles: [ "readWrite" ]
-   }
-)
+// db.createUser(
+//    {
+//      user: "adminpanel_user",
+//      pwd: "example",
+//      roles: [ "readWrite" ]
+//    }
+// )
+
+db.users.drop();
+db.users.insertMany([ {
+  "_id": ObjectId("61b85603a77df173ac4df406"),
+  "firstname": "faizan",
+  "lastname": "qureshi",
+  "email": "root@gmail.com",
+  "password": "$2a$10$Znu.eUxqCpZmNWTD/5J4D.r7BiGL0wWYjaewSTRsyfVJ8ny0.nk3i",
+  "role": "superadmin", 'createdAt': new Date(), 'updatedAt': new Date() },
+]);
 
 // The drop() command destroys all data from a collection.
 // Make sure you run it against the correct database and collection.
-db.superadministrators.drop();
+db.superadmins.drop();
 
 // Insert a few documents into the sales collection.
-db.superadministrators.insertMany([
-  { 'email': 'admin@enovavision.com', 'first_name': 'Admin', 'last_name': 'admin', 'createdAt': new Date(), 'updatedAt': new Date() },
+db.superadmins.insertMany([ {
+  "_id": ObjectId("61b85604a77df173ac4df409"),
+  "userId": "61b85603a77df173ac4df406",
+  "firstname": "faizan",
+  "lastname": "qureshi",
+  "email": "root@gmail.com",
+  "password": "$2a$10$Znu.eUxqCpZmNWTD/5J4D.r7BiGL0wWYjaewSTRsyfVJ8ny0.nk3i", 'createdAt': new Date(), 'updatedAt': new Date() },
 ]);
