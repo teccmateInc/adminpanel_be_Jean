@@ -23,10 +23,37 @@ exports.getSuperAdmin = async (req, res, next) => {
         data: user,
       });
     } else {
-      res.status(200).json({success: false, message: 'No SuperAdmin found!',data:user});
+      res.status(200).json({success: false,
+        message: 'No SuperAdmin found!', data: user});
     }
   } catch (err) {
     handleError(res, 'SuperAmin not found!');
+  }
+};
+
+
+//updated
+// get superAdmin details
+exports.getSuperAdminDetails = async(req,res,next)=>{
+  try {
+    const superAdmin = await SuperAdmin.find({userId:req.user.id})
+    if(strictValidArrayWithMinLength(superAdmin,1)){
+      res.status(200).json({
+        success: true,
+        message: "SuperAdmin found successfully!",
+        data: superAdmin
+      })
+    }
+    else {
+      res.status(200).json({
+        success:false,
+        message:'SuperAdmin not found!',
+        data:superAdmin
+      })
+    }
+  } catch (err) {
+    console.log(err)
+    handleError(res,'Something wents wrong. Try again later!');
   }
 };
 
@@ -118,7 +145,6 @@ exports.updateSuperAdmin = async (req, res, next) => {
   }
 };
 
-
 // delete admin
 exports.deleteSuperAdmin = async (req, res, next) => {
   try {
@@ -126,7 +152,7 @@ exports.deleteSuperAdmin = async (req, res, next) => {
     if (!user) {
       return res.status(200).json({
         success: false,
-        message: 'User not found!',
+        message: 'superadmin not found',
       });
     }
     user = await User.findByIdAndDelete(req.params.superAdminId);

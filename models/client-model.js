@@ -49,10 +49,10 @@ const clientSchema = schema({
     type: Number,
   },
   city: {
-    type: String,
+    type: Boolean,
   },
   country: {
-    type: String,
+    type: Boolean,
   },
   admin_contact: {
     type: String,
@@ -71,8 +71,7 @@ const clientSchema = schema({
     type: Boolean,
   },
   language: {
-    type: Array,
-    default: ['en'],
+    type: Boolean
   },
   pa: {
     type: String,

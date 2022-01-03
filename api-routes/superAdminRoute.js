@@ -4,6 +4,7 @@ const {
   createSuperAdmin,
   deleteSuperAdmin,
   updateSuperAdmin,
+  getSuperAdminDetails,
 } = require('../controllers/superAdmin-controller');
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/auth');
 const router = express.Router;
@@ -13,11 +14,16 @@ SuperAdminRouter.route('/')
     .get(isAuthenticatedUser, authorizeRoles('superadmin'), getSuperAdmin)
     .post(isAuthenticatedUser, authorizeRoles('superadmin'), createSuperAdmin);
 
-
 SuperAdminRouter.route('/:superAdminId')
     .put(isAuthenticatedUser, authorizeRoles('superadmin'), updateSuperAdmin)
     .delete(isAuthenticatedUser,
         authorizeRoles('superadmin'),
         deleteSuperAdmin);
 
-module.exports = SuperAdminRouter;
+
+//updated
+SuperAdminRouter.route('/me')
+    .get(isAuthenticatedUser, getSuperAdminDetails);
+
+
+    module.exports = SuperAdminRouter;
