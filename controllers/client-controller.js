@@ -59,7 +59,7 @@ exports.getAllClients = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Clients not found!',
-        data: clients,
+        data:clients
       });
     }
   } catch (err) {
@@ -83,7 +83,7 @@ exports.getClient = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Client not found!',
-        data: client,
+        data:client
       });
     }
   } catch (err) {
@@ -92,19 +92,18 @@ exports.getClient = async (req, res, next) => {
   }
 };
 
-// get client details
-//updated
-exports.getClientDetails = async(req,res,next)=>{
+//get login client
+exports.getClientDetails=async(req,res,next)=>{
   try {
-    const client = await Client.find({userId:req.user.id})
+    const client =await Client.findById({userId:req.user.id})
     if(strictValidArrayWithMinLength(client,1)){
       res.status(200).json({
-        success: true,
-        message: "Client found successfully!",
-        data: client
+        success:true,
+        message:"Client found successfully",
+        data:client
       })
     }
-    else {
+    else{
       res.status(200).json({
         success:false,
         message:'Client not found!',
@@ -112,9 +111,9 @@ exports.getClientDetails = async(req,res,next)=>{
       })
     }
   } catch (err) {
-    handleError(res,'Something wents wrong. Try again later!');
+    handleError(res,'Something wents wrong. Try again later! ')
   }
-};
+}
 
 // update client
 exports.updateClient = async (req, res, next) => {

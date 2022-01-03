@@ -43,15 +43,6 @@ const utils = {
 
   strictValidArrayWithMinLength: (arr, minLength) =>
     utils.strictValidArray(arr) && arr.length >= minLength,
-
-  isArrayOfStrings: (value) => {
-    return Array.isArray(value) &&
-      value.every((item) => Array.isArray(item));
-  },
-  isArrayOfNumbers: (value) => {
-    return Array.isArray(value) &&
-      value.every((item) => typeof item === 'number');
-  },
 };
 
 module.exports = utils;

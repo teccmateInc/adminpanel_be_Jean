@@ -8,11 +8,6 @@ const {
   generateValidationsErrors,
 } = require('../helper/utils');
 const sendToken = require('../helper/jwtToken');
-const Candidate=require('../models/candidate-model');
-const Client = require('../models/client-model');
-const Admin = require('../models/administrator-model');
-const SuperAdmin =require('../models/superAdministrator-model');
-
 
 // Handle get Users actions
 exports.getUsers = async (_, res) => {
@@ -51,7 +46,8 @@ exports.UserLogin = async (req, res) => {
       {
         return handleErrorWithStatus(res, 200, 'Invalid request!');
       }
-    } else sendToken(user, 200, res);
+    } else 
+    sendToken(user, 200, res);
   } catch (err) {
     console.log(err);
     if (strictValidObjectWithKeys(generateValidationsErrors(err))) {

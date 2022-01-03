@@ -14,6 +14,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
   } else {
     const decodedData = jwt.verify(token, jwtSecret);
     req.user = await User.findById(decodedData.id);
+    console.log(req.user)
     next();
   }
 };
@@ -21,9 +22,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
 // Check who has the access for making requests
 exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (req.user == null) {
-      handleErrorWithStatus(res, 401, `User not exist`);
-    } else if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.user.role)) {
       handleErrorWithStatus(res, 403, `Access Denied!`);
     } else next();
   };

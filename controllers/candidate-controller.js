@@ -11,7 +11,7 @@ const bcrypt = require('bcryptjs');
 // create new candidate
 exports.createNewCandidate = async (req, res, next) => {
   try {
-    const {firstname, lastname, email, password, role = 'candidate'} = req.body;
+    const { firstname, lastname, email, password, role = 'candidate' } = req.body;
     const user = await User.create({
       firstname, lastname, email, password, role,
     });
@@ -37,9 +37,9 @@ exports.createNewCandidate = async (req, res, next) => {
     if (err && err.code === 11000) handleError(res, 'Email is already exists!');
     else {
       handleError(
-          res,
-          'Candidate not created!',
-          generateValidationsErrors(err));
+        res,
+        'Candidate not created!',
+        generateValidationsErrors(err));
     }
   }
 };
@@ -48,8 +48,8 @@ exports.createNewCandidate = async (req, res, next) => {
 exports.getAllCandidates = async (req, res, next) => {
   try {
     const users = await Candidate.find()
-        .populate('createdBy')
-        .populate('updatedBy');
+      .populate('createdBy')
+      .populate('updatedBy');
     if (strictValidArrayWithMinLength(users, 1)) {
       res.status(200).json({
         success: true,
@@ -71,8 +71,8 @@ exports.getAllCandidates = async (req, res, next) => {
 exports.getCandidate = async (req, res, next) => {
   try {
     const candidate = await Candidate.findById(req.params.candidateId)
-        .populate('createdBy')
-        .populate('updatedBy');
+      .populate('createdBy')
+      .populate('updatedBy');
     if (strictValidObjectWithKeys(candidate)) {
       res.status(200).json({
         success: true,
@@ -92,30 +92,28 @@ exports.getCandidate = async (req, res, next) => {
 };
 
 //get candidate details
-//updated
 exports.getCandidateDetails = async (req, res, next) => {
-
   try {
     const candidate = await Candidate.find({userId:req.user.id})
     if (strictValidArrayWithMinLength(candidate,1)) {
       res.status(200).json({
         success: true,
-        message: "Candidate found successfully",
+        message: "Client found successfully",
         data: candidate
       })
     }
     else {
       res.status(200).json({
         success: false,
-        message: 'Candidate not found!',
+        message: 'Client not found!',
         data: candidate
       })
     }
   } catch (err) {
     console.log(err)
-    handleError(res, 'Something wents wrong. Try again late ');
+    handleError(res, 'Something wents wrong. Try again later! ')
   }
-};
+}
 
 // update candidate
 exports.updateCandidate = async (req, res, next) => {
@@ -133,21 +131,21 @@ exports.updateCandidate = async (req, res, next) => {
           };
         }
         candidate = await User.findByIdAndUpdate(
-            req.params.userId,
-            {...req.body, ...updatedPassword},
-            {
-              new: true,
-              runValidators: false,
-              useFindAndModify: false,
-            });
+          req.params.userId,
+          { ...req.body, ...updatedPassword },
+          {
+            new: true,
+            runValidators: false,
+            useFindAndModify: false,
+          });
         candidate = await Candidate.findOneAndUpdate({
           userId: req.params.userId,
-        }, {...req.body, ...updatedPassword, updatedBy: req.user},
-        {
-          new: true,
-          runValidators: false,
-          useFindAndModify: false,
-        });
+        }, { ...req.body, ...updatedPassword, updatedBy: req.user },
+          {
+            new: true,
+            runValidators: false,
+            useFindAndModify: false,
+          });
       }
       res.status(201).json({
         success: true,
@@ -158,7 +156,7 @@ exports.updateCandidate = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Candidate not found!',
-        data: candidate,
+        data: candidate
       });
     }
   } catch (err) {

@@ -11,8 +11,9 @@ const sendToken = (user, statusCode, res) => {
   };
   const data = user;
   delete data.password;
+  console.log(data);
   res.status(statusCode).cookie('token', token, options).json({
-    success: true,
+    succes: true,
     data,
     token,
   });

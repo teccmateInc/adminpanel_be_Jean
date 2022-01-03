@@ -15,7 +15,7 @@ const allowedRoles = authorizeRoles('admin', 'superadmin');
 OrderRouter.route('/')
     .get(isAuthenticatedUser, allowedRoles, getAllOrders)
     .post(isAuthenticatedUser,
-        // authorizeRoles('client'),
+        authorizeRoles('client'),
         createOrder,
     );
 

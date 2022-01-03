@@ -67,6 +67,11 @@ const candidateSchema = schema({
   sector: {
     type: Boolean,
   },
+  email: {
+    type: String,
+    required: [true, 'Enter youor email'],
+    validate: [validator.isEmail, 'please Enter valid email'],
+  },
   skype: {
     type: String,
   },
@@ -154,7 +159,7 @@ const candidateSchema = schema({
   salary_hour: {
     type: Number,
   },
-  certificate: {
+  certificat: {
     type: String,
   },
   feedback_ref: {

@@ -3,9 +3,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const useragent = require('express-useragent');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-const bodyParser=require('body-parser')
 // Import routes
 const apiRoutes = require('./api-routes/api-routes');
 
@@ -25,14 +22,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(useragent.express());
 app.use(cookieParser());
-app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({extended: false}));
-
-app.use('/api-docs', swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument));
-
 
 // Connect to Mongoose and set connection variable
 const {url} = require('./config/db.config');
@@ -42,6 +34,13 @@ try {
 } catch (error) {
   console.log('Error connecting db');
 }
+
+// Send message for default '/' URL
+app.get('/', function(req, res) {
+  res.send(req.useragent);
+});
+
+app.get('/', (req, res) => res.send(`<h1>Welcome To Admin Panel!</h1>`));
 
 // Use Api routes in the App
 app.use('/api', apiRoutes);

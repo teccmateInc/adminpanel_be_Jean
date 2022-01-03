@@ -29,13 +29,5 @@ router.use('/calendar', CalendarRouter);
 const orderRouter = require('./orderRoutes');
 router.use('/order', orderRouter);
 
-// file routes
-const fileRouter = require('./fileRoutes');
-router.use('/file', fileRouter);
-
-// field routes
-const fieldRouter = require('./fieldRoutes');
-router.use('/field', fieldRouter);
-
 // Export API routes
 module.exports = router;

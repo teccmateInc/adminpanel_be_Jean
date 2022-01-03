@@ -20,8 +20,7 @@ exports.getAllAdmins = async (req, res, next) => {
         data: admins,
       });
     } else {
-      res.status(200).json({success: false,
-        message: 'no Admin found', data: admins});
+      res.status(200).json({success: false, message: 'no Admin found',data:admins});
     }
   } catch (err) {
     handleError(res, 'invalid admin');
@@ -44,44 +43,43 @@ exports.getAdmin = async (req, res, next) => {
       res.status(200).json({
         success: false,
         message: 'Admin not found',
-        data: admin,
+        data:admin
       });
     }
   } catch (err) {
-    handleError(res, 'Admin not found!');
+    handleError(res, 'Admin not found');
   }
 };
 
-//updated
-// get client details
-exports.getAdminDetails = async(req,res,next)=>{
+//get candidate details
+exports.getAdminDetails = async (req, res, next) => {
   try {
     const admin = await Admin.find({userId:req.user.id})
-    if(strictValidArrayWithMinLength(admin,1)){
+    if (strictValidArrayWithMinLength(admin,1)) {
       res.status(200).json({
         success: true,
-        message: "Admin found successfully!",
+        message: "Admin found successfully",
         data: admin
       })
     }
     else {
       res.status(200).json({
-        success:false,
-        message:'Admin not found!',
-        data:admin
+        success: false,
+        message: 'Admin not found!',
+        data: admin
       })
     }
   } catch (err) {
-    handleError(res,'Something wents wrong. Try again later!');
+  
+    handleError(res, 'Something wents wrong. Try again later! ')
   }
-};
+}
 
 
 // create admin
 exports.createNewAdmin = async (req, res, next) => {
   try {
     const {firstname, lastname, email, password, role = 'admin'} = req.body;
-    console.log(req.body)
     const user = await User.create({
       firstname,
       lastname,
