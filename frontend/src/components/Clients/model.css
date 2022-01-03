@@ -1,0 +1,30 @@
+.modal-section{
+    max-width: 100%;
+}
+.modal-section>div{
+    display: flex;
+    padding:0.5vmax
+}
+.modal-section>div>p{
+    font: 400 1.2vmax "Roboto";
+}
+.modal-section>div>span{
+    font: 400 1.2vmax "Roboto";
+}
+@media screen and (max-width: 600px) {
+    .modal-section{
+        max-width: 100%;
+        overflow:scroll;
+    }
+    .modal-section>div{
+        display: flex;
+        padding:1vmax
+    }
+    .modal-section>div>p{
+        padding-right: 1vmax;
+        font: 400 2vmax "Roboto";
+    }
+    .modal-section>div>span{
+        font: 400 2vmax "Roboto";
+    }   
+}

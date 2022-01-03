@@ -1,0 +1,26 @@
+.sidebar{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 1rem; 
+}
+.sidebar a{
+    text-decoration: none;
+    color: rgba(0,0,0,0.6);
+    font: 200 1vmax "Roboto" !important;
+    padding: 2rem;
+}
+.MuiTreeItem-label{
+    /* font: 300 1.6vmax "Roboto" !important; */
+    padding: 1rem 0;
+}
+.sidebar a>p{
+    display: flex;
+    align-items: center;
+}
+.sidebar a>p>svg{
+    margin-right: 0.5rem;
+}
+.MuiTreeItem-root{
+    background-color: white !important;
+}
